@@ -1,5 +1,11 @@
 [
   {
+    "id": "patterns",
+    "name": "Patterns",
+    "description": "Nested loops, coordinate symmetry, star and number pyramids, palindromic characters, and concentric matrix spirals.",
+    "status": "Completed"
+  },
+  {
     "id": "arrays",
     "name": "Arrays",
     "description": "Contiguous memory structures, Kadane's algorithm, prefix sums, and in-place transformations.",

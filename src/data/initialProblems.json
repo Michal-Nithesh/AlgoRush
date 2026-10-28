@@ -1,8 +1,333 @@
 [
   {
+    "id": "pattern-rectangular-star",
+    "title": "Pattern 1: Rectangular Star Pattern",
+    "topicIds": [
+      "patterns"
+    ],
+    "difficulty": "Easy",
+    "url": "",
+    "estimatedTime": 10,
+    "description": "Given an integer n, print an n x n square grid of asterisks (* ) separated by a space.\n\nExample for N = 4:\n* * * *\n* * * *\n* * * *\n* * * *",
+    "notes": "for (int i = 0; i < n; i++) {\n    for (int j = 0; j < n; j++) {\n        System.out.print(\"* \");\n    }\n    System.out.println();\n}",
+    "forRevision": false,
+    "createdAt": "2025-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "pattern-right-angled-triangle",
+    "title": "Pattern 2: Right-Angled Triangle Pattern",
+    "topicIds": [
+      "patterns"
+    ],
+    "difficulty": "Easy",
+    "url": "",
+    "estimatedTime": 10,
+    "description": "Given an integer n, print a right-angled triangle where row i contains i + 1 asterisks (* ).\n\nExample for N = 4:\n*\n* *\n* * *\n* * * *",
+    "notes": "for (int i = 0; i < n; i++) {\n    for (int j = 0; j <= i; j++) {\n        System.out.print(\"* \");\n    }\n    System.out.println();\n}",
+    "forRevision": false,
+    "createdAt": "2025-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "pattern-right-angled-number-pyramid",
+    "title": "Pattern 3: Right-Angled Number Pyramid",
+    "topicIds": [
+      "patterns"
+    ],
+    "difficulty": "Easy",
+    "url": "",
+    "estimatedTime": 10,
+    "description": "Given an integer n, print a right-angled triangle where each row i contains numbers from 1 up to i.\n\nExample for N = 5:\n1\n1 2\n1 2 3\n1 2 3 4\n1 2 3 4 5",
+    "notes": "for (int i = 1; i <= n; i++) {\n    for (int j = 1; j <= i; j++) {\n        System.out.print(j + \" \");\n    }\n    System.out.println();\n}",
+    "forRevision": false,
+    "createdAt": "2025-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "pattern-right-angled-number-pyramid-ii",
+    "title": "Pattern 4: Right-Angled Number Pyramid II",
+    "topicIds": [
+      "patterns"
+    ],
+    "difficulty": "Easy",
+    "url": "",
+    "estimatedTime": 10,
+    "description": "Given an integer n, print a right-angled triangle where row i repeats the row number i exactly i times.\n\nExample for N = 5:\n1\n2 2\n3 3 3\n4 4 4 4\n5 5 5 5 5",
+    "notes": "for (int i = 1; i <= n; i++) {\n    for (int j = 1; j <= i; j++) {\n        System.out.print(i + \" \");\n    }\n    System.out.println();\n}",
+    "forRevision": false,
+    "createdAt": "2025-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "pattern-inverted-right-pyramid",
+    "title": "Pattern 5: Inverted Right Pyramid",
+    "topicIds": [
+      "patterns"
+    ],
+    "difficulty": "Easy",
+    "url": "",
+    "estimatedTime": 10,
+    "description": "Given an integer n, print an inverted right-angled triangle starting with n asterisks on the first row down to 1 asterisk on row n.\n\nExample for N = 5:\n* * * * *\n* * * *\n* * *\n* *\n*",
+    "notes": "for (int i = 0; i < n; i++) {\n    for (int j = 0; j < n - i; j++) {\n        System.out.print(\"* \");\n    }\n    System.out.println();\n}",
+    "forRevision": false,
+    "createdAt": "2025-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "pattern-inverted-numbered-right-pyramid",
+    "title": "Pattern 6: Inverted Numbered Right Pyramid",
+    "topicIds": [
+      "patterns"
+    ],
+    "difficulty": "Easy",
+    "url": "",
+    "estimatedTime": 10,
+    "description": "Given an integer n, print an inverted right triangle starting with numbers 1 to n on the first row, down to 1 on the last row.\n\nExample for N = 5:\n1 2 3 4 5\n1 2 3 4\n1 2 3\n1 2\n1",
+    "notes": "for (int i = 0; i < n; i++) {\n    for (int j = 1; j <= n - i; j++) {\n        System.out.print(j + \" \");\n    }\n    System.out.println();\n}",
+    "forRevision": false,
+    "createdAt": "2025-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "pattern-star-pyramid",
+    "title": "Pattern 7: Star Pyramid",
+    "topicIds": [
+      "patterns"
+    ],
+    "difficulty": "Medium",
+    "url": "",
+    "estimatedTime": 15,
+    "description": "Given an integer n, print a centered star pyramid with n rows. Row i has (n - i - 1) leading spaces and (2*i + 1) asterisks.\n\nExample for N = 5:\n    *\n   ***\n  *****\n *******\n*********",
+    "notes": "for (int i = 0; i < n; i++) {\n    for (int j = 0; j < n - i - 1; j++) System.out.print(\" \");\n    for (int j = 0; j < 2 * i + 1; j++) System.out.print(\"*\");\n    System.out.println();\n}",
+    "forRevision": false,
+    "createdAt": "2025-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "pattern-inverted-star-pyramid",
+    "title": "Pattern 8: Inverted Star Pyramid",
+    "topicIds": [
+      "patterns"
+    ],
+    "difficulty": "Medium",
+    "url": "",
+    "estimatedTime": 15,
+    "description": "Given an integer n, print an inverted star pyramid. Row i has i spaces followed by 2*(n - i) - 1 asterisks.\n\nExample for N = 5:\n*********\n *******\n  *****\n   ***\n    *",
+    "notes": "for (int i = 0; i < n; i++) {\n    for (int j = 0; j < i; j++) System.out.print(\" \");\n    for (int j = 0; j < 2 * (n - i) - 1; j++) System.out.print(\"*\");\n    System.out.println();\n}",
+    "forRevision": false,
+    "createdAt": "2025-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "pattern-diamond-star",
+    "title": "Pattern 9: Diamond Star Pattern",
+    "topicIds": [
+      "patterns"
+    ],
+    "difficulty": "Medium",
+    "url": "",
+    "estimatedTime": 15,
+    "description": "Given an integer n, print a symmetric star diamond of 2*n rows formed by combining an upright star pyramid and an inverted star pyramid.\n\nExample for N = 5:\n    *\n   ***\n  *****\n *******\n*********\n*********\n *******\n  *****\n   ***\n    *",
+    "notes": "Compose StarPyramid(n) directly followed by InvertedStarPyramid(n).",
+    "forRevision": false,
+    "createdAt": "2025-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "pattern-half-diamond-star",
+    "title": "Pattern 10: Half Diamond Star Pattern",
+    "topicIds": [
+      "patterns"
+    ],
+    "difficulty": "Medium",
+    "url": "",
+    "estimatedTime": 15,
+    "description": "Given an integer n, print a vertical half diamond of 2*n - 1 rows pointing to the right.\n\nExample for N = 5:\n*\n* *\n* * *\n* * * *\n* * * * *\n* * * *\n* * *\n* *\n*",
+    "notes": "for (int i = 1; i <= 2 * n - 1; i++) {\n    int stars = (i <= n) ? i : 2 * n - i;\n    for (int j = 0; j < stars; j++) System.out.print(\"* \");\n    System.out.println();\n}",
+    "forRevision": false,
+    "createdAt": "2025-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "pattern-binary-number-triangle",
+    "title": "Pattern 11: Binary Number Triangle",
+    "topicIds": [
+      "patterns"
+    ],
+    "difficulty": "Medium",
+    "url": "",
+    "estimatedTime": 15,
+    "description": "Given an integer n, print a right triangle of alternating 1s and 0s where even rows start with 1 and odd rows start with 0.\n\nExample for N = 5:\n1 \n0 1 \n1 0 1 \n0 1 0 1 \n1 0 1 0 1",
+    "notes": "for (int i = 0; i < n; i++) {\n    int start = (i % 2 == 0) ? 1 : 0;\n    for (int j = 0; j <= i; j++) {\n        System.out.print(start + \" \");\n        start = 1 - start;\n    }\n    System.out.println();\n}",
+    "forRevision": false,
+    "createdAt": "2025-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "pattern-number-crown",
+    "title": "Pattern 12: Number Crown Pattern",
+    "topicIds": [
+      "patterns"
+    ],
+    "difficulty": "Medium",
+    "url": "",
+    "estimatedTime": 20,
+    "description": "Given an integer n, print a symmetric number crown with numbers 1..i on left, 2*(n-i) middle spaces, and i..1 on right.\n\nExample for N = 5:\n1        1\n12      21\n123    321\n1234  4321\n1234554321",
+    "notes": "int space = 2 * (n - 1);\nfor (int i = 1; i <= n; i++) {\n    for (int j = 1; j <= i; j++) System.out.print(j);\n    for (int j = 1; j <= space; j++) System.out.print(\" \");\n    for (int j = i; j >= 1; j--) System.out.print(j);\n    System.out.println();\n    space -= 2;\n}",
+    "forRevision": true,
+    "createdAt": "2025-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "pattern-increasing-number-triangle",
+    "title": "Pattern 13: Increasing Number Triangle (Floyd's Triangle)",
+    "topicIds": [
+      "patterns"
+    ],
+    "difficulty": "Easy",
+    "url": "",
+    "estimatedTime": 10,
+    "description": "Given an integer n, print Floyd's triangle with continuous integers starting at 1 and incrementing with each cell.\n\nExample for N = 5:\n1 \n2 3 \n4 5 6 \n7 8 9 10 \n11 12 13 14 15",
+    "notes": "int num = 1;\nfor (int i = 0; i < n; i++) {\n    for (int j = 0; j <= i; j++) {\n        System.out.print(num++ + \" \");\n    }\n    System.out.println();\n}",
+    "forRevision": false,
+    "createdAt": "2025-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "pattern-increasing-letter-triangle",
+    "title": "Pattern 14: Increasing Letter Triangle",
+    "topicIds": [
+      "patterns"
+    ],
+    "difficulty": "Easy",
+    "url": "",
+    "estimatedTime": 10,
+    "description": "Given an integer n, print a right triangle where row i contains uppercase letters starting from 'A' up to 'A' + i.\n\nExample for N = 5:\nA \nA B \nA B C \nA B C D \nA B C D E",
+    "notes": "for (int i = 0; i < n; i++) {\n    for (char ch = 'A'; ch <= 'A' + i; ch++) {\n        System.out.print(ch + \" \");\n    }\n    System.out.println();\n}",
+    "forRevision": false,
+    "createdAt": "2025-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "pattern-reverse-letter-triangle",
+    "title": "Pattern 15: Reverse Letter Triangle",
+    "topicIds": [
+      "patterns"
+    ],
+    "difficulty": "Easy",
+    "url": "",
+    "estimatedTime": 10,
+    "description": "Given an integer n, print an inverted triangle with letters from 'A' up to 'A' + n - 1 - i on row i.\n\nExample for N = 5:\nA B C D E \nA B C D \nA B C \nA B \nA",
+    "notes": "for (int i = 0; i < n; i++) {\n    for (char ch = 'A'; ch <= 'A' + n - 1 - i; ch++) {\n        System.out.print(ch + \" \");\n    }\n    System.out.println();\n}",
+    "forRevision": false,
+    "createdAt": "2025-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "pattern-alpha-ramp",
+    "title": "Pattern 16: Alpha Ramp Pattern",
+    "topicIds": [
+      "patterns"
+    ],
+    "difficulty": "Easy",
+    "url": "",
+    "estimatedTime": 10,
+    "description": "Given an integer n, print a right triangle where row i repeats letter ('A' + i) exactly i + 1 times.\n\nExample for N = 5:\nA \nB B \nC C C \nD D D D \nE E E E E",
+    "notes": "for (int i = 0; i < n; i++) {\n    char ch = (char) ('A' + i);\n    for (int j = 0; j <= i; j++) {\n        System.out.print(ch + \" \");\n    }\n    System.out.println();\n}",
+    "forRevision": false,
+    "createdAt": "2025-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "pattern-alpha-hill",
+    "title": "Pattern 17: Alpha Hill Pattern",
+    "topicIds": [
+      "patterns"
+    ],
+    "difficulty": "Medium",
+    "url": "",
+    "estimatedTime": 15,
+    "description": "Given an integer n, print a centered pyramid with spaces and sequential uppercase alphabet characters.\n\nExample for N = 4:\n   A\n  ABC\n ABCDE\nABCDEFG",
+    "notes": "for (int i = 0; i < n; i++) {\n    for (int j = 0; j < n - i - 1; j++) System.out.print(\" \");\n    for (char ch = 'A'; ch <= 'A' + 2 * i; ch++) System.out.print(ch);\n    System.out.println();\n}",
+    "forRevision": false,
+    "createdAt": "2025-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "pattern-palindromic-alpha-hill",
+    "title": "Pattern 18: Palindromic Alpha Hill",
+    "topicIds": [
+      "patterns"
+    ],
+    "difficulty": "Medium",
+    "url": "",
+    "estimatedTime": 20,
+    "description": "Given an integer n, recreate the palindromic alphabet pyramid. For N = 5:\n    A\n   ABA\n  ABCBA\n ABCDCBA\nABCDEDCBA",
+    "notes": "for (int i = 0; i < n; i++) {\n    for (int j = 0; j < n - i - 1; j++) System.out.print(\" \");\n    char ch = 'A';\n    for (int j = 0; j < 2 * i + 1; j++) {\n        System.out.print(ch);\n        if (j < i) ch++; else ch--;\n    }\n    System.out.println();\n}",
+    "forRevision": true,
+    "createdAt": "2025-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "pattern-reverse-alpha-triangle",
+    "title": "Pattern 19: Reverse Alpha Triangle",
+    "topicIds": [
+      "patterns"
+    ],
+    "difficulty": "Medium",
+    "url": "",
+    "estimatedTime": 15,
+    "description": "Given an integer n, recreate the pattern where row i begins at letter ('A' + n - 1 - i) and advances up to ('A' + n - 1).\n\nFor N = 5:\nE \n\nD E \n\nC D E \n\nB C D E \n\nA B C D E",
+    "notes": "for (int i = 0; i < n; i++) {\n    for (char ch = (char) ('A' + n - 1 - i); ch <= (char) ('A' + n - 1); ch++) {\n        System.out.print(ch + \" \");\n    }\n    System.out.println();\n    System.out.println();\n}",
+    "forRevision": false,
+    "createdAt": "2025-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "pattern-symmetric-void-stars",
+    "title": "Pattern 20: Symmetric Void / Inverted Butterfly Star Pattern",
+    "topicIds": [
+      "patterns"
+    ],
+    "difficulty": "Hard",
+    "url": "",
+    "estimatedTime": 25,
+    "description": "Given an integer n, recreate the symmetric star box with hollow center for N = 5:\n**********\n****  ****\n***    ***\n**      **\n*        *\n*        *\n**      **\n***    ***\n****  ****\n**********",
+    "notes": "// Upper half:\nfor (int i = 0; i < n; i++) {\n    for (int j = 0; j < n - i; j++) System.out.print(\"*\");\n    for (int j = 0; j < 2 * i; j++) System.out.print(\" \");\n    for (int j = 0; j < n - i; j++) System.out.print(\"*\");\n    System.out.println();\n}\n// Lower half:\nfor (int i = 0; i < n; i++) {\n    for (int j = 0; j <= i; j++) System.out.print(\"*\");\n    for (int j = 0; j < 2 * (n - i - 1); j++) System.out.print(\" \");\n    for (int j = 0; j <= i; j++) System.out.print(\"*\");\n    System.out.println();\n}",
+    "forRevision": true,
+    "createdAt": "2025-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "pattern-butterfly-star",
+    "title": "Pattern 21: Butterfly Star Pattern",
+    "topicIds": [
+      "patterns"
+    ],
+    "difficulty": "Hard",
+    "url": "",
+    "estimatedTime": 25,
+    "description": "Given an integer n, recreate the complete butterfly star pattern with symmetric wings for N = 5:\n*        *\n**      **\n***    ***\n****  ****\n**********\n****  ****\n***    ***\n**      **\n*        *",
+    "notes": "int totalRows = 2 * n - 1;\nfor (int i = 1; i <= totalRows; i++) {\n    int stars = (i <= n) ? i : 2 * n - i;\n    int spaces = 2 * (n - stars);\n    for (int j = 1; j <= stars; j++) System.out.print(\"*\");\n    for (int j = 1; j <= spaces; j++) System.out.print(\" \");\n    for (int j = 1; j <= stars; j++) System.out.print(\"*\");\n    System.out.println();\n}",
+    "forRevision": true,
+    "createdAt": "2025-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "pattern-hollow-square-star",
+    "title": "Pattern 22: Hollow Square Star Pattern",
+    "topicIds": [
+      "patterns"
+    ],
+    "difficulty": "Easy",
+    "url": "",
+    "estimatedTime": 15,
+    "description": "Given an integer n, recreate the hollow square border pattern for N = 5:\n*****\n*   *\n*   *\n*   *\n*****",
+    "notes": "for (int i = 0; i < n; i++) {\n    for (int j = 0; j < n; j++) {\n        if (i == 0 || j == 0 || i == n - 1 || j == n - 1) System.out.print(\"*\");\n        else System.out.print(\" \");\n    }\n    System.out.println();\n}",
+    "forRevision": false,
+    "createdAt": "2025-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "pattern-concentric-number-spiral",
+    "title": "Pattern 23: Concentric Number Spiral",
+    "topicIds": [
+      "patterns"
+    ],
+    "difficulty": "Hard",
+    "url": "",
+    "estimatedTime": 30,
+    "description": "Given an integer n, recreate the (2*n - 1) x (2*n - 1) concentric square number spiral for N = 5:\n5 5 5 5 5 5 5 5 5 \n5 4 4 4 4 4 4 4 5 \n5 4 3 3 3 3 3 4 5 \n5 4 3 2 2 2 3 4 5 \n5 4 3 2 1 2 3 4 5 \n5 4 3 2 2 2 3 4 5 \n5 4 3 3 3 3 3 4 5 \n5 4 4 4 4 4 4 4 5 \n5 5 5 5 5 5 5 5 5",
+    "notes": "int size = 2 * n - 1;\nfor (int i = 0; i < size; i++) {\n    for (int j = 0; j < size; j++) {\n        int top = i, left = j, bottom = size - 1 - i, right = size - 1 - j;\n        int dist = Math.min(Math.min(top, bottom), Math.min(left, right));\n        System.out.print((n - dist) + \" \");\n    }\n    System.out.println();\n}",
+    "forRevision": true,
+    "createdAt": "2025-01-01T00:00:00.000Z"
+  },
+  {
     "id": "two-sum",
     "title": "Two Sum",
-    "topicIds": ["arrays", "strings-hashing"],
+    "topicIds": [
+      "arrays",
+      "strings-hashing"
+    ],
     "difficulty": "Easy",
     "url": "https://leetcode.com/problems/two-sum/",
     "estimatedTime": 15,
@@ -14,7 +339,10 @@
   {
     "id": "best-time-to-buy-and-sell-stock",
     "title": "Best Time to Buy and Sell Stock",
-    "topicIds": ["arrays", "two-pointers"],
+    "topicIds": [
+      "arrays",
+      "two-pointers"
+    ],
     "difficulty": "Easy",
     "url": "https://leetcode.com/problems/best-time-to-buy-and-sell-stock/",
     "estimatedTime": 15,
@@ -26,7 +354,10 @@
   {
     "id": "maximum-subarray",
     "title": "Maximum Subarray",
-    "topicIds": ["arrays", "dynamic-programming"],
+    "topicIds": [
+      "arrays",
+      "dynamic-programming"
+    ],
     "difficulty": "Medium",
     "url": "https://leetcode.com/problems/maximum-subarray/",
     "estimatedTime": 20,
@@ -38,7 +369,9 @@
   {
     "id": "valid-anagram",
     "title": "Valid Anagram",
-    "topicIds": ["strings-hashing"],
+    "topicIds": [
+      "strings-hashing"
+    ],
     "difficulty": "Easy",
     "url": "https://leetcode.com/problems/valid-anagram/",
     "estimatedTime": 15,
@@ -50,7 +383,9 @@
   {
     "id": "binary-search",
     "title": "Binary Search",
-    "topicIds": ["binary-search"],
+    "topicIds": [
+      "binary-search"
+    ],
     "difficulty": "Easy",
     "url": "https://leetcode.com/problems/binary-search/",
     "estimatedTime": 15,
@@ -62,7 +397,10 @@
   {
     "id": "search-in-rotated-sorted-array",
     "title": "Search in Rotated Sorted Array",
-    "topicIds": ["binary-search", "arrays"],
+    "topicIds": [
+      "binary-search",
+      "arrays"
+    ],
     "difficulty": "Medium",
     "url": "https://leetcode.com/problems/search-in-rotated-sorted-array/",
     "estimatedTime": 30,
@@ -74,7 +412,10 @@
   {
     "id": "longest-substring-without-repeating-characters",
     "title": "Longest Substring Without Repeating Characters",
-    "topicIds": ["sliding-window", "strings-hashing"],
+    "topicIds": [
+      "sliding-window",
+      "strings-hashing"
+    ],
     "difficulty": "Medium",
     "url": "https://leetcode.com/problems/longest-substring-without-repeating-characters/",
     "estimatedTime": 25,
@@ -86,7 +427,10 @@
   {
     "id": "max-consecutive-ones-iii",
     "title": "Maximum Consecutive Ones III",
-    "topicIds": ["sliding-window", "two-pointers"],
+    "topicIds": [
+      "sliding-window",
+      "two-pointers"
+    ],
     "difficulty": "Medium",
     "url": "https://leetcode.com/problems/max-consecutive-ones-iii/",
     "estimatedTime": 25,
@@ -98,7 +442,9 @@
   {
     "id": "reverse-linked-list",
     "title": "Reverse Linked List",
-    "topicIds": ["linked-lists"],
+    "topicIds": [
+      "linked-lists"
+    ],
     "difficulty": "Easy",
     "url": "https://leetcode.com/problems/reverse-linked-list/",
     "estimatedTime": 15,
@@ -110,7 +456,9 @@
   {
     "id": "valid-parentheses",
     "title": "Valid Parentheses",
-    "topicIds": ["stacks-queues"],
+    "topicIds": [
+      "stacks-queues"
+    ],
     "difficulty": "Easy",
     "url": "https://leetcode.com/problems/valid-parentheses/",
     "estimatedTime": 15,
@@ -122,7 +470,10 @@
   {
     "id": "maximum-depth-of-binary-tree",
     "title": "Maximum Depth of Binary Tree",
-    "topicIds": ["trees", "recursion"],
+    "topicIds": [
+      "trees",
+      "recursion"
+    ],
     "difficulty": "Easy",
     "url": "https://leetcode.com/problems/maximum-depth-of-binary-tree/",
     "estimatedTime": 15,
@@ -134,7 +485,10 @@
   {
     "id": "number-of-islands",
     "title": "Number of Islands",
-    "topicIds": ["graphs", "recursion"],
+    "topicIds": [
+      "graphs",
+      "recursion"
+    ],
     "difficulty": "Medium",
     "url": "https://leetcode.com/problems/number-of-islands/",
     "estimatedTime": 30,
@@ -146,7 +500,10 @@
   {
     "id": "climbing-stairs",
     "title": "Climbing Stairs",
-    "topicIds": ["dynamic-programming", "recursion"],
+    "topicIds": [
+      "dynamic-programming",
+      "recursion"
+    ],
     "difficulty": "Easy",
     "url": "https://leetcode.com/problems/climbing-stairs/",
     "estimatedTime": 15,
@@ -158,7 +515,10 @@
   {
     "id": "subsets",
     "title": "Subsets",
-    "topicIds": ["backtracking", "recursion"],
+    "topicIds": [
+      "backtracking",
+      "recursion"
+    ],
     "difficulty": "Medium",
     "url": "https://leetcode.com/problems/subsets/",
     "estimatedTime": 25,
@@ -170,7 +530,10 @@
   {
     "id": "permutations",
     "title": "Permutations",
-    "topicIds": ["backtracking", "recursion"],
+    "topicIds": [
+      "backtracking",
+      "recursion"
+    ],
     "difficulty": "Medium",
     "url": "https://leetcode.com/problems/permutations/",
     "estimatedTime": 25,
@@ -182,7 +545,10 @@
   {
     "id": "3sum",
     "title": "3Sum",
-    "topicIds": ["two-pointers", "arrays"],
+    "topicIds": [
+      "two-pointers",
+      "arrays"
+    ],
     "difficulty": "Medium",
     "url": "https://leetcode.com/problems/3sum/",
     "estimatedTime": 30,
@@ -194,7 +560,10 @@
   {
     "id": "container-with-most-water",
     "title": "Container With Most Water",
-    "topicIds": ["two-pointers", "arrays"],
+    "topicIds": [
+      "two-pointers",
+      "arrays"
+    ],
     "difficulty": "Medium",
     "url": "https://leetcode.com/problems/container-with-most-water/",
     "estimatedTime": 20,
@@ -206,7 +575,9 @@
   {
     "id": "min-stack",
     "title": "Min Stack",
-    "topicIds": ["stacks-queues"],
+    "topicIds": [
+      "stacks-queues"
+    ],
     "difficulty": "Medium",
     "url": "https://leetcode.com/problems/min-stack/",
     "estimatedTime": 20,
@@ -218,7 +589,9 @@
   {
     "id": "lowest-common-ancestor-of-a-binary-search-tree",
     "title": "Lowest Common Ancestor of a Binary Search Tree",
-    "topicIds": ["trees"],
+    "topicIds": [
+      "trees"
+    ],
     "difficulty": "Medium",
     "url": "https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/",
     "estimatedTime": 20,
@@ -230,7 +603,9 @@
   {
     "id": "clone-graph",
     "title": "Clone Graph",
-    "topicIds": ["graphs"],
+    "topicIds": [
+      "graphs"
+    ],
     "difficulty": "Medium",
     "url": "https://leetcode.com/problems/clone-graph/",
     "estimatedTime": 30,
@@ -242,7 +617,9 @@
   {
     "id": "coin-change",
     "title": "Coin Change",
-    "topicIds": ["dynamic-programming"],
+    "topicIds": [
+      "dynamic-programming"
+    ],
     "difficulty": "Medium",
     "url": "https://leetcode.com/problems/coin-change/",
     "estimatedTime": 30,
@@ -254,7 +631,11 @@
   {
     "id": "trapping-rain-water",
     "title": "Trapping Rain Water",
-    "topicIds": ["two-pointers", "arrays", "stacks-queues"],
+    "topicIds": [
+      "two-pointers",
+      "arrays",
+      "stacks-queues"
+    ],
     "difficulty": "Hard",
     "url": "https://leetcode.com/problems/trapping-rain-water/",
     "estimatedTime": 45,
@@ -266,7 +647,9 @@
   {
     "id": "merge-k-sorted-lists",
     "title": "Merge k Sorted Lists",
-    "topicIds": ["linked-lists"],
+    "topicIds": [
+      "linked-lists"
+    ],
     "difficulty": "Hard",
     "url": "https://leetcode.com/problems/merge-k-sorted-lists/",
     "estimatedTime": 45,
