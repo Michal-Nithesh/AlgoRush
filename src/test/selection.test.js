@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   filterProblems,
   selectRandomProblem,
+  selectRandomTopic,
   calculateTargetWheelRotation,
 } from '../utils/selection';
 
@@ -92,6 +93,15 @@ describe('Selection & Filtering Logic', () => {
 });
 
 describe('Random Selection & Session Avoidance', () => {
+  it('selects random topic from topics array', () => {
+    const mockTopics = [{ id: 't1', name: 'Arrays' }, { id: 't2', name: 'Patterns' }];
+    const { selectedTopic, selectedIndex } = selectRandomTopic(mockTopics);
+    expect(selectedTopic).toBeDefined();
+    expect(selectedIndex).toBeGreaterThanOrEqual(0);
+    expect(selectedIndex).toBeLessThan(2);
+    expect(selectRandomTopic([]).selectedTopic).toBeNull();
+  });
+
   it('returns null and index -1 for empty pool', () => {
     const { selectedProblem, selectedIndex } = selectRandomProblem([]);
     expect(selectedProblem).toBeNull();

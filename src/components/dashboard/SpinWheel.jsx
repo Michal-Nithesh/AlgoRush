@@ -1,83 +1,127 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import {
-  filterProblems,
+  selectRandomTopic,
   selectRandomProblem,
   calculateTargetWheelRotation,
 } from '../../utils/selection';
-import { playTickSound } from '../../utils/audio';
-import { Sparkles, RotateCw, AlertCircle, Compass } from 'lucide-react';
+import { playTickSound, playSuccessChime } from '../../utils/audio';
+import {
+  RotateCw,
+  AlertCircle,
+  Compass,
+  Layers,
+  HelpCircle,
+  ArrowRight,
+  ArrowLeft,
+  CheckCircle2,
+} from 'lucide-react';
 
-export default function SpinWheel({ onProblemSelected, isChallengeActive = false, onRequestAbandon = () => {} }) {
+export default function SpinWheel({
+  onProblemSelected,
+  isChallengeActive = false,
+  onRequestAbandon = () => {},
+}) {
   const {
+    topics,
     problems,
     selectedTopicIds,
     difficultyFilter,
     setDifficultyFilter,
     sessionSolvedIds,
     settings,
+    showToast,
   } = useApp();
+
+  // Two-stage wheel: 'topic' (Stage 1) -> 'question' (Stage 2)
+  const [stage, setStage] = useState('topic');
+  const [chosenTopic, setChosenTopic] = useState(() => {
+    // Default to 'patterns' if exists, otherwise first topic
+    return topics.find((t) => t.id === 'patterns') || topics[0] || null;
+  });
 
   const [rotationAngle, setRotationAngle] = useState(0);
   const [isSpinning, setIsSpinning] = useState(false);
-  const [pickedProblem, setPickedProblem] = useState(null);
-  const lastSpinTimeRef = useRef(0);
+  const [pendingSelection, setPendingSelection] = useState(null);
+
   const audioIntervalRef = useRef(null);
 
-  // Eligible problems matching currently selected topics and difficulty
+  // Eligible topics for Stage 1
+  const eligibleTopics = useMemo(() => {
+    if (selectedTopicIds.length > 0) {
+      return topics.filter((t) => selectedTopicIds.includes(t.id));
+    }
+    return topics;
+  }, [topics, selectedTopicIds]);
+
+  // Eligible problems for Stage 2 (filtered by chosenTopic and difficulty)
   const eligibleProblems = useMemo(() => {
-    return filterProblems(problems, {
-      selectedTopicIds,
-      difficulty: difficultyFilter,
+    if (!chosenTopic) return [];
+    return problems.filter((p) => {
+      const matchTopic = p.topicIds?.includes(chosenTopic.id);
+      if (!matchTopic) return false;
+      if (difficultyFilter !== 'all') {
+        return p.difficulty.toLowerCase() === difficultyFilter.toLowerCase();
+      }
+      return true;
     });
-  }, [problems, selectedTopicIds, difficultyFilter]);
+  }, [problems, chosenTopic, difficultyFilter]);
+
+  // Active items currently on the wheel slices
+  const currentWheelItems = stage === 'topic' ? eligibleTopics : eligibleProblems;
 
   // Handle spin action
-  const handleSpin = () => {
+  const handleSpinClick = () => {
     if (isSpinning) return;
-    if (eligibleProblems.length === 0) return;
+    if (currentWheelItems.length === 0) return;
 
     if (isChallengeActive) {
       onRequestAbandon(() => {
-        // Callback if user confirms abandoning current challenge
-        triggerSpin();
+        executeSpin();
       });
       return;
     }
 
-    triggerSpin();
+    executeSpin();
   };
 
-  const triggerSpin = () => {
+  const executeSpin = () => {
     setIsSpinning(true);
-    setPickedProblem(null);
-    lastSpinTimeRef.current = Date.now();
+    setPendingSelection(null);
 
-    // Select genuinely random problem respecting session-solved avoidance
-    const { selectedProblem, selectedIndex } = selectRandomProblem(
-      eligibleProblems,
-      sessionSolvedIds
-    );
+    let selectedItem = null;
+    let selectedIndex = -1;
 
-    if (!selectedProblem || selectedIndex === -1) {
+    if (stage === 'topic') {
+      const result = selectRandomTopic(eligibleTopics);
+      selectedItem = result.selectedTopic;
+      selectedIndex = result.selectedIndex;
+    } else {
+      const result = selectRandomProblem(eligibleProblems, sessionSolvedIds);
+      selectedItem = result.selectedProblem;
+      selectedIndex = result.selectedIndex;
+    }
+
+    if (!selectedItem || selectedIndex === -1) {
       setIsSpinning(false);
       return;
     }
 
-    // Keep reference to picked problem
-    setPickedProblem(selectedProblem);
+    setPendingSelection({
+      stage,
+      item: selectedItem,
+    });
 
-    // Calculate exact target rotation so selectedIndex slice stops at 12 o'clock (0 deg)
     const targetRotation = calculateTargetWheelRotation(
       selectedIndex,
-      eligibleProblems.length,
+      currentWheelItems.length,
       rotationAngle,
-      6 // 6 full rotations
+      6
     );
 
     setRotationAngle(targetRotation);
 
-    // Play subtle ticks during spin if sound enabled
+    // Audio clicks during spin
     if (settings?.soundEnabled) {
       let tickCount = 0;
       const maxTicks = 16;
@@ -91,7 +135,7 @@ export default function SpinWheel({ onProblemSelected, isChallengeActive = false
     }
   };
 
-  // Clean up audio tick interval on unmount
+  // Clean up audio interval
   useEffect(() => {
     return () => {
       if (audioIntervalRef.current) clearInterval(audioIntervalRef.current);
@@ -103,23 +147,34 @@ export default function SpinWheel({ onProblemSelected, isChallengeActive = false
     setIsSpinning(false);
     if (audioIntervalRef.current) clearInterval(audioIntervalRef.current);
 
-    if (pickedProblem) {
-      onProblemSelected(pickedProblem);
+    if (pendingSelection) {
+      if (pendingSelection.stage === 'topic') {
+        const topic = pendingSelection.item;
+        setChosenTopic(topic);
+        playSuccessChime();
+        showToast(`Topic selected: ${topic.name}! Now spin for your question.`, 'success');
+        // Switch to stage 2 for questions
+        setStage('question');
+      } else {
+        const problem = pendingSelection.item;
+        playSuccessChime();
+        onProblemSelected(problem);
+        showToast(`Question selected: ${problem.title}!`, 'success');
+      }
     }
   };
 
-  // Slice geometry for SVG wheel
+  // Wheel slice geometry calculations
   const wheelSlices = useMemo(() => {
-    const total = eligibleProblems.length;
+    const total = currentWheelItems.length;
     if (total === 0) return [];
 
     const sliceAngle = 360 / total;
 
-    return eligibleProblems.map((problem, index) => {
-      const startAngle = index * sliceAngle - 90; // Start at 12 o'clock (-90 deg in standard SVG)
+    return currentWheelItems.map((item, index) => {
+      const startAngle = index * sliceAngle - 90;
       const endAngle = (index + 1) * sliceAngle - 90;
 
-      // Coordinate calculation on circle (radius 140)
       const r = 140;
       const cx = 150;
       const cy = 150;
@@ -137,99 +192,183 @@ export default function SpinWheel({ onProblemSelected, isChallengeActive = false
         ? `M ${cx} ${cy - r} A ${r} ${r} 0 1 1 ${cx - 0.01} ${cy - r} Z`
         : `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2} Z`;
 
-      // Text rotation and position at midpoint of the slice
       const midAngle = (index + 0.5) * sliceAngle - 90;
       const midRad = (midAngle * Math.PI) / 180;
       const textRadius = r * 0.65;
       const tx = cx + textRadius * Math.cos(midRad);
       const ty = cy + textRadius * Math.sin(midRad);
-      const textAngle = midAngle + 90; // orient outward
+      const textAngle = midAngle + 90;
 
-      // Alternating slice background colors
       const isEven = index % 2 === 0;
-      const sliceFill = isEven ? '#1D2740' : '#151C30';
+      const sliceFill = stage === 'topic'
+        ? (isEven ? '#1D2740' : '#151C30')
+        : (isEven ? '#1F2942' : '#141A2E');
 
-      // Truncate long title
-      const maxLen = total > 12 ? 10 : 14;
-      const displayTitle =
-        problem.title.length > maxLen
-          ? `${problem.title.substring(0, maxLen)}...`
-          : problem.title;
+      const rawLabel = item.name || item.title || '';
+      const maxLen = total > 14 ? 10 : 13;
+      const displayLabel = rawLabel.length > maxLen ? `${rawLabel.substring(0, maxLen)}...` : rawLabel;
 
       return {
-        id: problem.id,
+        id: item.id,
         index,
         pathData,
         sliceFill,
         tx,
         ty,
         textAngle,
-        displayTitle,
-        difficulty: problem.difficulty,
+        displayLabel,
       };
     });
-  }, [eligibleProblems]);
+  }, [currentWheelItems, stage]);
 
   return (
     <div className="bg-[#151C30] border border-[#29344D] rounded-2xl p-5 shadow-lg flex flex-col gap-4">
-      {/* Header and Difficulty filter */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <Compass className="w-4 h-4 text-cyan-400" />
-          <h3 className="text-sm font-bold text-slate-100 uppercase tracking-wider font-mono">
-            Problem Roulette
-          </h3>
-          <span className="text-xs text-slate-400 font-mono">
-            ({eligibleProblems.length} available)
-          </span>
+      {/* 2-Step Stage Bar */}
+      <div className="flex items-center justify-between border-b border-[#29344D] pb-3">
+        <div className="flex items-center gap-1.5 bg-[#1D2740] p-1 rounded-xl border border-[#29344D] text-xs">
+          <button
+            type="button"
+            onClick={() => {
+              if (!isSpinning) setStage('topic');
+            }}
+            disabled={isSpinning}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-medium transition-all ${
+              stage === 'topic'
+                ? 'bg-purple-600 text-white shadow-sm'
+                : 'text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <Layers className="w-3.5 h-3.5" />
+            <span>1. Spin Topic</span>
+            {chosenTopic && stage === 'question' && (
+              <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+            )}
+          </button>
+
+          <ArrowRight className="w-3.5 h-3.5 text-slate-500" />
+
+          <button
+            type="button"
+            onClick={() => {
+              if (!isSpinning && chosenTopic) setStage('question');
+            }}
+            disabled={isSpinning || !chosenTopic}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-medium transition-all ${
+              stage === 'question'
+                ? 'bg-cyan-600 text-white shadow-sm'
+                : 'text-slate-400 hover:text-slate-200 disabled:opacity-40 disabled:cursor-not-allowed'
+            }`}
+          >
+            <HelpCircle className="w-3.5 h-3.5" />
+            <span>2. Spin Question</span>
+          </button>
         </div>
 
-        {/* Difficulty Filter Chips */}
-        <div className="flex items-center gap-1 bg-[#1D2740] p-0.5 rounded-lg border border-[#29344D]">
-          {['all', 'Easy', 'Medium', 'Hard'].map((diff) => (
-            <button
-              key={diff}
-              onClick={() => setDifficultyFilter(diff)}
-              className={`px-2.5 py-1 text-xs font-medium rounded-md transition-all ${
-                difficultyFilter.toLowerCase() === diff.toLowerCase()
-                  ? 'bg-purple-600 text-white shadow-sm'
-                  : 'text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              {diff === 'all' ? 'All' : diff}
-            </button>
-          ))}
-        </div>
+        {/* Difficulty Filter Chips (only active in question stage) */}
+        {stage === 'question' && (
+          <div className="hidden sm:flex items-center gap-1 bg-[#1D2740] p-0.5 rounded-lg border border-[#29344D]">
+            {['all', 'Easy', 'Medium', 'Hard'].map((diff) => (
+              <button
+                key={diff}
+                onClick={() => setDifficultyFilter(diff)}
+                className={`px-2 py-0.5 text-[11px] font-medium rounded-md transition-all ${
+                  difficultyFilter.toLowerCase() === diff.toLowerCase()
+                    ? 'bg-cyan-600 text-white'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                {diff === 'all' ? 'All' : diff}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* Wheel Container or Empty State */}
-      {eligibleProblems.length === 0 ? (
+      {/* Stage Context Banner */}
+      <div className="flex items-center justify-between text-xs px-1">
+        {stage === 'topic' ? (
+          <div className="flex items-center gap-1.5 text-purple-300 font-medium">
+            <Compass className="w-4 h-4 text-purple-400" />
+            <span>Step 1: Spin to select your practice topic</span>
+            <span className="text-[11px] font-mono text-slate-400">
+              ({eligibleTopics.length} topics)
+            </span>
+          </div>
+        ) : (
+          <div className="flex items-center justify-between w-full">
+            <div className="flex items-center gap-1.5 text-cyan-300 font-medium">
+              <span className="px-2 py-0.5 rounded bg-cyan-950/60 text-cyan-300 border border-cyan-800/40 text-[11px] font-mono font-bold">
+                {chosenTopic?.name}
+              </span>
+              <span>&rarr; Spin for question</span>
+              <span className="text-[11px] font-mono text-slate-400">
+                ({eligibleProblems.length} available)
+              </span>
+            </div>
+
+            <button
+              onClick={() => setStage('topic')}
+              disabled={isSpinning}
+              className="text-[11px] text-purple-400 hover:text-purple-300 flex items-center gap-1 font-medium transition-colors"
+            >
+              <ArrowLeft className="w-3 h-3" />
+              <span>Respin Topic</span>
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Wheel Graphic Container or Empty State */}
+      {currentWheelItems.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-12 px-4 text-center rounded-2xl bg-[#0B1020]/50 border border-dashed border-[#29344D] my-2">
           <div className="p-3 bg-[#1D2740] rounded-2xl text-amber-400 mb-3">
             <AlertCircle className="w-6 h-6" />
           </div>
           <h4 className="text-sm font-semibold text-slate-200 mb-1">
-            No Eligible Problems
+            {stage === 'topic' ? 'No Topics Available' : 'No Questions Found'}
           </h4>
           <p className="text-xs text-slate-400 max-w-xs mb-3">
-            No problems match your current topic selection and difficulty filter.
+            {stage === 'topic'
+              ? 'Please select at least one topic in the topic list above.'
+              : `No questions in "${chosenTopic?.name}" match the current difficulty filter.`}
           </p>
-          <div className="text-[11px] text-purple-400 font-mono bg-purple-900/20 px-3 py-1.5 rounded-lg border border-purple-500/20">
-            Tip: Select more topics or switch difficulty to &ldquo;All&rdquo;.
-          </div>
+          {stage === 'question' && (
+            <button
+              onClick={() => setDifficultyFilter('all')}
+              className="text-xs text-cyan-400 hover:text-cyan-300 underline font-mono"
+            >
+              Reset difficulty to &ldquo;All&rdquo;
+            </button>
+          )}
         </div>
       ) : (
         <div className="relative flex flex-col items-center justify-center my-2 select-none">
           {/* Top Pointer Indicator (at 12 o'clock pointing down) */}
           <div className="absolute top-0 z-20 flex flex-col items-center -translate-y-2 pointer-events-none">
-            <div className="w-5 h-6 bg-gradient-to-b from-cyan-400 to-purple-500 clip-triangle shadow-glow-cyan filter drop-shadow-[0_2px_6px_rgba(34,211,238,0.8)]" />
-            <div className="w-1.5 h-1.5 rounded-full bg-cyan-300 shadow-glow-cyan -mt-1" />
+            <div
+              className={`w-5 h-6 clip-triangle filter ${
+                stage === 'topic'
+                  ? 'bg-gradient-to-b from-purple-400 to-indigo-600 shadow-glow-purple drop-shadow-[0_2px_6px_rgba(139,92,246,0.8)]'
+                  : 'bg-gradient-to-b from-cyan-400 to-blue-600 shadow-glow-cyan drop-shadow-[0_2px_6px_rgba(34,211,238,0.8)]'
+              }`}
+            />
+            <div
+              className={`w-1.5 h-1.5 rounded-full -mt-1 ${
+                stage === 'topic' ? 'bg-purple-300' : 'bg-cyan-300'
+              }`}
+            />
           </div>
 
           {/* Wheel Graphic */}
           <div className="relative w-[280px] h-[280px] sm:w-[310px] sm:h-[310px] flex items-center justify-center">
             {/* Outer Glowing Ring */}
-            <div className="absolute inset-0 rounded-full border-2 border-purple-500/30 shadow-[0_0_25px_rgba(139,92,246,0.15)] pointer-events-none" />
+            <div
+              className={`absolute inset-0 rounded-full border-2 pointer-events-none transition-all duration-300 ${
+                stage === 'topic'
+                  ? 'border-purple-500/30 shadow-[0_0_25px_rgba(139,92,246,0.15)]'
+                  : 'border-cyan-500/30 shadow-[0_0_25px_rgba(34,211,238,0.15)]'
+              }`}
+            />
 
             <svg
               viewBox="0 0 300 300"
@@ -261,7 +400,7 @@ export default function SpinWheel({ onProblemSelected, isChallengeActive = false
                     stroke="#29344D"
                     strokeWidth="1.5"
                   />
-                  {/* Problem Title Label */}
+                  {/* Label */}
                   <text
                     x={slice.tx}
                     y={slice.ty}
@@ -269,17 +408,17 @@ export default function SpinWheel({ onProblemSelected, isChallengeActive = false
                     textAnchor="middle"
                     dominantBaseline="middle"
                     fill="#E2E8F0"
-                    fontSize={eligibleProblems.length > 14 ? '8.5' : '10'}
+                    fontSize={currentWheelItems.length > 14 ? '8.5' : '10'}
                     fontWeight="600"
                     fontFamily="Plus Jakarta Sans, sans-serif"
                     className="pointer-events-none"
                   >
-                    {slice.displayTitle}
+                    {slice.displayLabel}
                   </text>
                 </g>
               ))}
 
-              {/* Center Decorative Circle */}
+              {/* Center Decorative Ring */}
               <circle
                 cx="150"
                 cy="150"
@@ -293,22 +432,28 @@ export default function SpinWheel({ onProblemSelected, isChallengeActive = false
             {/* Interactive Center Hub Button */}
             <button
               type="button"
-              onClick={handleSpin}
-              disabled={isSpinning || eligibleProblems.length === 0}
+              onClick={handleSpinClick}
+              disabled={isSpinning || currentWheelItems.length === 0}
               className={`absolute z-10 w-20 h-20 rounded-full flex flex-col items-center justify-center transition-all ${
                 isSpinning
                   ? 'bg-[#1D2740] text-slate-500 cursor-not-allowed scale-95'
-                  : 'bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-800 text-white hover:scale-105 active:scale-95 shadow-glow-purple cursor-pointer'
+                  : stage === 'topic'
+                  ? 'bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-800 text-white hover:scale-105 active:scale-95 shadow-glow-purple cursor-pointer'
+                  : 'bg-gradient-to-br from-cyan-600 via-cyan-700 to-blue-800 text-white hover:scale-105 active:scale-95 shadow-glow-cyan cursor-pointer'
               }`}
-              aria-label="Spin wheel to select a random DSA problem"
+              aria-label={stage === 'topic' ? 'Spin to select a topic' : 'Spin to select a question'}
             >
               <RotateCw
                 className={`w-5 h-5 mb-0.5 ${
-                  isSpinning ? 'animate-spin text-purple-400' : 'text-cyan-300'
+                  isSpinning
+                    ? 'animate-spin text-purple-400'
+                    : stage === 'topic'
+                    ? 'text-purple-200'
+                    : 'text-cyan-200'
                 }`}
               />
-              <span className="text-[11px] font-extrabold tracking-wider uppercase font-mono">
-                {isSpinning ? 'RUSH' : 'SPIN'}
+              <span className="text-[10px] font-extrabold tracking-wider uppercase font-mono text-center leading-tight">
+                {isSpinning ? 'SPINNING' : stage === 'topic' ? 'SPIN\nTOPIC' : 'SPIN\nQSTN'}
               </span>
             </button>
           </div>
@@ -316,16 +461,26 @@ export default function SpinWheel({ onProblemSelected, isChallengeActive = false
           {/* Quick Spin Action Buttons */}
           <div className="flex items-center gap-2 mt-4 w-full">
             <button
-              onClick={handleSpin}
-              disabled={isSpinning || eligibleProblems.length === 0}
+              onClick={handleSpinClick}
+              disabled={isSpinning || currentWheelItems.length === 0}
               className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl font-semibold text-xs transition-all shadow-md ${
-                isSpinning || eligibleProblems.length === 0
+                isSpinning || currentWheelItems.length === 0
                   ? 'bg-[#1D2740] text-slate-500 cursor-not-allowed'
-                  : 'bg-purple-600 hover:bg-purple-500 text-white shadow-glow-purple'
+                  : stage === 'topic'
+                  ? 'bg-purple-600 hover:bg-purple-500 text-white shadow-glow-purple'
+                  : 'bg-cyan-600 hover:bg-cyan-500 text-white shadow-glow-cyan'
               }`}
             >
-              <Sparkles className="w-4 h-4 text-cyan-300" />
-              <span>{isSpinning ? 'Selecting Problem...' : 'Spin Random Problem'}</span>
+              <RotateCw className={`w-4 h-4 ${isSpinning ? 'animate-spin' : ''}`} />
+              <span>
+                {isSpinning
+                  ? stage === 'topic'
+                    ? 'Selecting Topic...'
+                    : 'Selecting Question...'
+                  : stage === 'topic'
+                  ? 'Spin for Random Topic'
+                  : `Spin Question from ${chosenTopic?.name || 'Topic'}`}
+              </span>
             </button>
           </div>
         </div>

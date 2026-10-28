@@ -1,4 +1,18 @@
 /**
+ * Select a random topic from the available topics pool.
+ */
+export function selectRandomTopic(topics = []) {
+  if (!topics || topics.length === 0) {
+    return { selectedTopic: null, selectedIndex: -1 };
+  }
+  const randomIndex = Math.floor(Math.random() * topics.length);
+  return {
+    selectedTopic: topics[randomIndex],
+    selectedIndex: randomIndex,
+  };
+}
+
+/**
  * Filter problems based on selected topics, difficulty, and optional revision/search filters.
  */
 export function filterProblems(problems = [], {
