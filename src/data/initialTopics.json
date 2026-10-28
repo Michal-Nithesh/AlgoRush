@@ -1,0 +1,74 @@
+[
+  {
+    "id": "arrays",
+    "name": "Arrays",
+    "description": "Contiguous memory structures, Kadane's algorithm, prefix sums, and in-place transformations.",
+    "status": "Completed"
+  },
+  {
+    "id": "strings-hashing",
+    "name": "Strings and Hashing",
+    "description": "Frequency maps, hash sets, string manipulation, and palindrome checks.",
+    "status": "Completed"
+  },
+  {
+    "id": "two-pointers",
+    "name": "Two Pointers",
+    "description": "Opposite-end convergence, fast/slow runners, and sorted array searches.",
+    "status": "Learning"
+  },
+  {
+    "id": "sliding-window",
+    "name": "Sliding Window",
+    "description": "Variable and fixed size subarrays/substrings, dynamic expansion and shrink criteria.",
+    "status": "Learning"
+  },
+  {
+    "id": "binary-search",
+    "name": "Binary Search",
+    "description": "Logarithmic search on sorted arrays, search space pruning, and rotated arrays.",
+    "status": "Learning"
+  },
+  {
+    "id": "recursion",
+    "name": "Recursion",
+    "description": "Base cases, recursive call stack, divide-and-conquer strategies.",
+    "status": "Learning"
+  },
+  {
+    "id": "backtracking",
+    "name": "Backtracking",
+    "description": "Decision trees, prune invalid paths, state restoration, subsets and permutations.",
+    "status": "Revision"
+  },
+  {
+    "id": "linked-lists",
+    "name": "Linked Lists",
+    "description": "Singly and doubly linked lists, pointer manipulation, cycle detection.",
+    "status": "Completed"
+  },
+  {
+    "id": "stacks-queues",
+    "name": "Stacks and Queues",
+    "description": "LIFO/FIFO orders, monotonic stacks, parenthesis matching, priority queues.",
+    "status": "Learning"
+  },
+  {
+    "id": "trees",
+    "name": "Trees",
+    "description": "Binary trees, BST properties, DFS/BFS traversals, LCA, depth calculations.",
+    "status": "Learning"
+  },
+  {
+    "id": "graphs",
+    "name": "Graphs",
+    "description": "Adjacency lists/matrices, BFS, DFS, cycle detection, connected components.",
+    "status": "Revision"
+  },
+  {
+    "id": "dynamic-programming",
+    "name": "Dynamic Programming",
+    "description": "Optimal substructure, overlapping subproblems, memoization, 1D/2D tabulation.",
+    "status": "Revision"
+  }
+]
