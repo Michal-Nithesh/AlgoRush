@@ -1,7 +1,7 @@
 import React from 'react';
 import DifficultyBadge from '../common/DifficultyBadge';
 import { useApp } from '../../context/AppContext';
-import { ExternalLink, Clock, Tag, BookmarkCheck, FileText, Sparkles } from 'lucide-react';
+import { ExternalLink, Clock, Tag, BookmarkCheck, HelpCircle } from 'lucide-react';
 
 export default function SelectedProblemCard({ problem }) {
   const { topics } = useApp();
@@ -10,13 +10,13 @@ export default function SelectedProblemCard({ problem }) {
     return (
       <div className="bg-[#151C30] border border-[#29344D] rounded-2xl p-6 text-center shadow-lg">
         <div className="w-12 h-12 mx-auto mb-3 rounded-2xl bg-[#1D2740] flex items-center justify-center text-purple-400">
-          <Sparkles className="w-6 h-6 animate-pulse" />
+          <HelpCircle className="w-6 h-6 animate-pulse" />
         </div>
         <h3 className="text-base font-semibold text-slate-200 mb-1">
           No Problem Selected
         </h3>
-        <p className="text-xs text-slate-400 max-w-sm mx-auto mb-4">
-          Click the SPIN button on the wheel to pick your next DSA challenge.
+        <p className="text-xs text-slate-400 max-w-sm mx-auto">
+          Spin the wheel or pick a problem from your library to start the challenge.
         </p>
       </div>
     );
@@ -86,18 +86,16 @@ export default function SelectedProblemCard({ problem }) {
         </div>
       </div>
 
-      {/* Description Snippet */}
+      {/* Question Statement & Pattern Target (Clean Question Only, No Answer/Code) */}
       {problem.description && (
-        <div className="text-xs text-slate-300 leading-relaxed bg-[#1D2740]/40 p-3.5 rounded-xl border border-[#29344D]">
-          <p className="line-clamp-3">{problem.description}</p>
-        </div>
-      )}
-
-      {/* Personal Notes (if present) */}
-      {problem.notes && (
-        <div className="text-xs text-slate-400 bg-[#0B1020]/40 p-3 rounded-xl border border-[#29344D]/60 flex items-start gap-2">
-          <FileText className="w-3.5 h-3.5 text-slate-400 flex-shrink-0 mt-0.5" />
-          <p className="italic line-clamp-2">{problem.notes}</p>
+        <div className="bg-[#0B1020]/70 border border-[#29344D] rounded-xl p-4 text-slate-200">
+          <div className="text-[11px] font-semibold text-purple-400 uppercase tracking-wider font-mono mb-2 flex items-center gap-1.5">
+            <HelpCircle className="w-3.5 h-3.5" />
+            <span>Problem Statement</span>
+          </div>
+          <pre className="text-xs text-slate-200 font-mono whitespace-pre-wrap leading-relaxed select-text">
+            {problem.description}
+          </pre>
         </div>
       )}
     </div>

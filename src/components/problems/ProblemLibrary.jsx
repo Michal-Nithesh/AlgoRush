@@ -278,15 +278,10 @@ export default function ProblemLibrary() {
                     </div>
                   </div>
 
-                  {/* Description / Notes snippet */}
+                  {/* Description / Question snippet */}
                   {problem.description && (
-                    <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">
+                    <p className="text-xs text-slate-400 line-clamp-3 leading-relaxed whitespace-pre-wrap font-mono">
                       {problem.description}
-                    </p>
-                  )}
-                  {problem.notes && (
-                    <p className="text-[11px] text-slate-500 italic line-clamp-1 border-l-2 border-purple-500/40 pl-2">
-                      {problem.notes}
                     </p>
                   )}
                 </div>
