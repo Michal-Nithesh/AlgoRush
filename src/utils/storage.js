@@ -1,8 +1,9 @@
 import initialTopics from '../data/initialTopics.json';
 import initialProblems from '../data/initialProblems.json';
 
-export const STORAGE_KEY = 'algorush_state_v1';
-export const CURRENT_SCHEMA_VERSION = 1;
+export const STORAGE_KEY = 'algorush_state_v2';
+export const LEGACY_STORAGE_KEY = 'algorush_state_v1';
+export const CURRENT_SCHEMA_VERSION = 2;
 
 /**
  * Default empty state structure
@@ -66,9 +67,6 @@ export function migrateState(rawState) {
 
   let state = { ...rawState };
 
-  // Future schema migration logic can be chained here:
-  // if (state.version === 1) { ... state.version = 2; }
-
   // Ensure mandatory fields exist
   if (!Array.isArray(state.topics)) state.topics = initialTopics;
   if (!Array.isArray(state.problems)) state.problems = initialProblems;
@@ -88,6 +86,25 @@ export function migrateState(rawState) {
 }
 
 /**
+ * Merge any newly introduced seed topics or problems into state
+ */
+export function syncSeedData(state) {
+  if (!state || typeof state !== 'object') return getDefaultState();
+
+  const existingTopicIds = new Set((state.topics || []).map((t) => t.id));
+  const missingTopics = (initialTopics || []).filter((t) => !existingTopicIds.has(t.id));
+
+  const existingProblemIds = new Set((state.problems || []).map((p) => p.id));
+  const missingProblems = (initialProblems || []).filter((p) => !existingProblemIds.has(p.id));
+
+  return {
+    ...state,
+    topics: missingTopics.length > 0 ? [...state.topics, ...missingTopics] : state.topics,
+    problems: missingProblems.length > 0 ? [...state.problems, ...missingProblems] : state.problems,
+  };
+}
+
+/**
  * Load state from localStorage with fallback and migration
  */
 export function loadStateFromStorage() {
@@ -96,7 +113,11 @@ export function loadStateFromStorage() {
   }
 
   try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
+    let raw = window.localStorage.getItem(STORAGE_KEY);
+    if (!raw) {
+      raw = window.localStorage.getItem(LEGACY_STORAGE_KEY);
+    }
+
     if (!raw) {
       const defaultState = getDefaultState();
       saveStateToStorage(defaultState);
@@ -104,7 +125,9 @@ export function loadStateFromStorage() {
     }
 
     const parsed = JSON.parse(raw);
-    return migrateState(parsed);
+    const migrated = syncSeedData(migrateState(parsed));
+    saveStateToStorage(migrated);
+    return migrated;
   } catch (err) {
     console.error('Failed to parse AlgoRush data from localStorage. Restoring default.', err);
     const defaultState = getDefaultState();
@@ -135,6 +158,9 @@ export function saveStateToStorage(state) {
 export function resetStorageToDefaults() {
   const defaultState = getDefaultState();
   saveStateToStorage(defaultState);
+  if (typeof window !== 'undefined' && window.localStorage) {
+    window.localStorage.removeItem(LEGACY_STORAGE_KEY);
+  }
   return defaultState;
 }
 

@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   validateImportData,
   migrateState,
+  syncSeedData,
   getDefaultState,
   CURRENT_SCHEMA_VERSION,
 } from '../utils/storage';
@@ -81,5 +82,17 @@ describe('Storage & Data Integrity', () => {
     expect(migrated.history).toHaveLength(1);
     expect(migrated.settings).toBeDefined();
     expect(migrated.sessionSolvedProblemIds).toEqual([]);
+  });
+
+  it('syncs missing seed topics and problems into existing user state', () => {
+    const userState = {
+      version: 2,
+      topics: [{ id: 'arrays', name: 'Arrays' }],
+      problems: [{ id: 'custom-p', title: 'Custom Problem', topicIds: ['arrays'] }],
+    };
+    const synced = syncSeedData(userState);
+    expect(synced.topics.some((t) => t.id === 'patterns')).toBe(true);
+    expect(synced.problems.some((p) => p.topicIds?.includes('patterns'))).toBe(true);
+    expect(synced.problems.some((p) => p.id === 'custom-p')).toBe(true);
   });
 });

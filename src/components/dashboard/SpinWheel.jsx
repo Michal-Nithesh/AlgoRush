@@ -13,8 +13,10 @@ import {
   Layers,
   HelpCircle,
   ArrowRight,
-  ArrowLeft,
+  RotateCcw,
+  Lock,
   CheckCircle2,
+  Sparkles,
 } from 'lucide-react';
 
 export default function SpinWheel({
@@ -33,12 +35,10 @@ export default function SpinWheel({
     showToast,
   } = useApp();
 
-  // Two-stage wheel: 'topic' (Stage 1) -> 'question' (Stage 2)
+  // Strict 2-stage workflow: Must complete 1st spin (topic) before 2nd spin (question) unlocks
   const [stage, setStage] = useState('topic');
-  const [chosenTopic, setChosenTopic] = useState(() => {
-    // Default to 'patterns' if exists, otherwise first topic
-    return topics.find((t) => t.id === 'patterns') || topics[0] || null;
-  });
+  const [hasCompletedTopicSpin, setHasCompletedTopicSpin] = useState(false);
+  const [chosenTopic, setChosenTopic] = useState(null);
 
   const [rotationAngle, setRotationAngle] = useState(0);
   const [isSpinning, setIsSpinning] = useState(false);
@@ -46,7 +46,7 @@ export default function SpinWheel({
 
   const audioIntervalRef = useRef(null);
 
-  // Eligible topics for Stage 1
+  // Eligible topics for 1st spin
   const eligibleTopics = useMemo(() => {
     if (selectedTopicIds.length > 0) {
       return topics.filter((t) => selectedTopicIds.includes(t.id));
@@ -54,23 +54,24 @@ export default function SpinWheel({
     return topics;
   }, [topics, selectedTopicIds]);
 
-  // Eligible problems for Stage 2 (filtered by chosenTopic and difficulty)
+  // Eligible problems for 2nd spin (from the topic chosen in 1st spin)
   const eligibleProblems = useMemo(() => {
     if (!chosenTopic) return [];
-    return problems.filter((p) => {
-      const matchTopic = p.topicIds?.includes(chosenTopic.id);
-      if (!matchTopic) return false;
-      if (difficultyFilter !== 'all') {
-        return p.difficulty.toLowerCase() === difficultyFilter.toLowerCase();
-      }
-      return true;
-    });
+    const topicProblems = problems.filter((p) => p.topicIds?.includes(chosenTopic.id));
+    if (difficultyFilter === 'all') {
+      return topicProblems;
+    }
+    const filtered = topicProblems.filter(
+      (p) => p.difficulty.toLowerCase() === difficultyFilter.toLowerCase()
+    );
+    // If difficulty filter leaves 0 questions, return all topic problems so user is never blocked
+    return filtered.length > 0 ? filtered : topicProblems;
   }, [problems, chosenTopic, difficultyFilter]);
 
-  // Active items currently on the wheel slices
+  // Active items currently placed on the wheel slices
   const currentWheelItems = stage === 'topic' ? eligibleTopics : eligibleProblems;
 
-  // Handle spin action
+  // Handle spin button click
   const handleSpinClick = () => {
     if (isSpinning) return;
     if (currentWheelItems.length === 0) return;
@@ -151,17 +152,30 @@ export default function SpinWheel({
       if (pendingSelection.stage === 'topic') {
         const topic = pendingSelection.item;
         setChosenTopic(topic);
+        setHasCompletedTopicSpin(true);
+        // Reset difficulty to 'all' so no problems in this topic are hidden
+        setDifficultyFilter('all');
         playSuccessChime();
-        showToast(`Topic selected: ${topic.name}! Now spin for your question.`, 'success');
-        // Switch to stage 2 for questions
+        showToast(`1st Spin Complete: Topic is "${topic.name}"! Now spin for your question.`, 'success');
+
+        // Automatically advance to 2nd spin
         setStage('question');
       } else {
         const problem = pendingSelection.item;
         playSuccessChime();
         onProblemSelected(problem);
-        showToast(`Question selected: ${problem.title}!`, 'success');
+        showToast(`2nd Spin Complete: "${problem.title}" selected!`, 'success');
       }
     }
+  };
+
+  // Reset back to Step 1 (re-lock Step 2 until Step 1 is spun again)
+  const handleResetToTopicSpin = () => {
+    if (isSpinning) return;
+    setStage('topic');
+    setHasCompletedTopicSpin(false);
+    setChosenTopic(null);
+    setDifficultyFilter('all');
   };
 
   // Wheel slice geometry calculations
@@ -223,9 +237,10 @@ export default function SpinWheel({
 
   return (
     <div className="bg-[#151C30] border border-[#29344D] rounded-2xl p-5 shadow-lg flex flex-col gap-4">
-      {/* 2-Step Stage Bar */}
+      {/* 2-Step Progress Stepper */}
       <div className="flex items-center justify-between border-b border-[#29344D] pb-3">
         <div className="flex items-center gap-1.5 bg-[#1D2740] p-1 rounded-xl border border-[#29344D] text-xs">
+          {/* Step 1 Tab Button */}
           <button
             type="button"
             onClick={() => {
@@ -239,32 +254,44 @@ export default function SpinWheel({
             }`}
           >
             <Layers className="w-3.5 h-3.5" />
-            <span>1. Spin Topic</span>
-            {chosenTopic && stage === 'question' && (
-              <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+            <span>1st Spin: Topic</span>
+            {hasCompletedTopicSpin && (
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
             )}
           </button>
 
           <ArrowRight className="w-3.5 h-3.5 text-slate-500" />
 
+          {/* Step 2 Tab Button (Locked until 1st spin completes) */}
           <button
             type="button"
             onClick={() => {
-              if (!isSpinning && chosenTopic) setStage('question');
+              if (!isSpinning && hasCompletedTopicSpin) setStage('question');
             }}
-            disabled={isSpinning || !chosenTopic}
+            disabled={isSpinning || !hasCompletedTopicSpin}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-medium transition-all ${
               stage === 'question'
                 ? 'bg-cyan-600 text-white shadow-sm'
-                : 'text-slate-400 hover:text-slate-200 disabled:opacity-40 disabled:cursor-not-allowed'
+                : hasCompletedTopicSpin
+                ? 'text-slate-400 hover:text-slate-200'
+                : 'text-slate-600 cursor-not-allowed opacity-60'
             }`}
+            title={
+              hasCompletedTopicSpin
+                ? 'Spin question from selected topic'
+                : 'Complete the 1st spin (Topic) first to unlock question spin'
+            }
           >
-            <HelpCircle className="w-3.5 h-3.5" />
-            <span>2. Spin Question</span>
+            {hasCompletedTopicSpin ? (
+              <HelpCircle className="w-3.5 h-3.5" />
+            ) : (
+              <Lock className="w-3.5 h-3.5" />
+            )}
+            <span>2nd Spin: Question</span>
           </button>
         </div>
 
-        {/* Difficulty Filter Chips (only active in question stage) */}
+        {/* Difficulty Filter Chips */}
         {stage === 'question' && (
           <div className="hidden sm:flex items-center gap-1 bg-[#1D2740] p-0.5 rounded-lg border border-[#29344D]">
             {['all', 'Easy', 'Medium', 'Hard'].map((diff) => (
@@ -289,50 +316,51 @@ export default function SpinWheel({
         {stage === 'topic' ? (
           <div className="flex items-center gap-1.5 text-purple-300 font-medium">
             <Compass className="w-4 h-4 text-purple-400" />
-            <span>Step 1: Spin to select your practice topic</span>
+            <span>1st Spin: Spin the wheel to pick your random topic</span>
             <span className="text-[11px] font-mono text-slate-400">
               ({eligibleTopics.length} topics)
             </span>
           </div>
         ) : (
           <div className="flex items-center justify-between w-full">
-            <div className="flex items-center gap-1.5 text-cyan-300 font-medium">
-              <span className="px-2 py-0.5 rounded bg-cyan-950/60 text-cyan-300 border border-cyan-800/40 text-[11px] font-mono font-bold">
-                {chosenTopic?.name}
+            <div className="flex items-center gap-2 text-cyan-300 font-medium">
+              <span className="px-2.5 py-0.5 rounded bg-cyan-950/80 text-cyan-300 border border-cyan-700/50 text-xs font-mono font-bold shadow-sm">
+                Topic: {chosenTopic?.name}
               </span>
-              <span>&rarr; Spin for question</span>
+              <span>&rarr; 2nd Spin: Choose question</span>
               <span className="text-[11px] font-mono text-slate-400">
                 ({eligibleProblems.length} available)
               </span>
             </div>
 
             <button
-              onClick={() => setStage('topic')}
+              onClick={handleResetToTopicSpin}
               disabled={isSpinning}
-              className="text-[11px] text-purple-400 hover:text-purple-300 flex items-center gap-1 font-medium transition-colors"
+              className="text-[11px] text-purple-400 hover:text-purple-300 flex items-center gap-1 font-medium transition-colors p-1 rounded hover:bg-[#1D2740]"
+              title="Return to Step 1 and choose a different topic"
             >
-              <ArrowLeft className="w-3 h-3" />
-              <span>Respin Topic</span>
+              <RotateCcw className="w-3 h-3" />
+              <span>Spin New Topic</span>
             </button>
           </div>
         )}
       </div>
 
-      {/* Wheel Graphic Container or Empty State */}
+      {/* Wheel Container or Empty State */}
       {currentWheelItems.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-12 px-4 text-center rounded-2xl bg-[#0B1020]/50 border border-dashed border-[#29344D] my-2">
           <div className="p-3 bg-[#1D2740] rounded-2xl text-amber-400 mb-3">
             <AlertCircle className="w-6 h-6" />
           </div>
           <h4 className="text-sm font-semibold text-slate-200 mb-1">
-            {stage === 'topic' ? 'No Topics Available' : 'No Questions Found'}
+            {stage === 'topic' ? 'No Topics Selected' : 'No Questions Found'}
           </h4>
           <p className="text-xs text-slate-400 max-w-xs mb-3">
             {stage === 'topic'
               ? 'Please select at least one topic in the topic list above.'
-              : `No questions in "${chosenTopic?.name}" match the current difficulty filter.`}
+              : `No questions found in "${chosenTopic?.name}".`}
           </p>
-          {stage === 'question' && (
+          {stage === 'question' && difficultyFilter !== 'all' && (
             <button
               onClick={() => setDifficultyFilter('all')}
               className="text-xs text-cyan-400 hover:text-cyan-300 underline font-mono"
@@ -343,7 +371,7 @@ export default function SpinWheel({
         </div>
       ) : (
         <div className="relative flex flex-col items-center justify-center my-2 select-none">
-          {/* Top Pointer Indicator (at 12 o'clock pointing down) */}
+          {/* Top Pointer Indicator */}
           <div className="absolute top-0 z-20 flex flex-col items-center -translate-y-2 pointer-events-none">
             <div
               className={`w-5 h-6 clip-triangle filter ${
@@ -441,7 +469,7 @@ export default function SpinWheel({
                   ? 'bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-800 text-white hover:scale-105 active:scale-95 shadow-glow-purple cursor-pointer'
                   : 'bg-gradient-to-br from-cyan-600 via-cyan-700 to-blue-800 text-white hover:scale-105 active:scale-95 shadow-glow-cyan cursor-pointer'
               }`}
-              aria-label={stage === 'topic' ? 'Spin to select a topic' : 'Spin to select a question'}
+              aria-label={stage === 'topic' ? '1st Spin: Select a topic' : '2nd Spin: Select a question'}
             >
               <RotateCw
                 className={`w-5 h-5 mb-0.5 ${
@@ -453,7 +481,11 @@ export default function SpinWheel({
                 }`}
               />
               <span className="text-[10px] font-extrabold tracking-wider uppercase font-mono text-center leading-tight">
-                {isSpinning ? 'SPINNING' : stage === 'topic' ? 'SPIN\nTOPIC' : 'SPIN\nQSTN'}
+                {isSpinning
+                  ? 'SPINNING'
+                  : stage === 'topic'
+                  ? 'SPIN\nTOPIC'
+                  : 'SPIN\nQSTN'}
               </span>
             </button>
           </div>
@@ -471,15 +503,15 @@ export default function SpinWheel({
                   : 'bg-cyan-600 hover:bg-cyan-500 text-white shadow-glow-cyan'
               }`}
             >
-              <RotateCw className={`w-4 h-4 ${isSpinning ? 'animate-spin' : ''}`} />
+              <Sparkles className="w-4 h-4 text-white" />
               <span>
                 {isSpinning
                   ? stage === 'topic'
-                    ? 'Selecting Topic...'
-                    : 'Selecting Question...'
+                    ? '1st Spin: Selecting Topic...'
+                    : '2nd Spin: Selecting Question...'
                   : stage === 'topic'
-                  ? 'Spin for Random Topic'
-                  : `Spin Question from ${chosenTopic?.name || 'Topic'}`}
+                  ? '1st Spin: Spin for Random Topic'
+                  : `2nd Spin: Pick Random Question from ${chosenTopic?.name || 'Topic'}`}
               </span>
             </button>
           </div>
