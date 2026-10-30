@@ -36,43 +36,37 @@ export default function ChallengeTimer({ timer }) {
   // Circular progress SVG geometry
   const radius = 90;
   const circumference = 2 * Math.PI * radius;
-  // Progress fraction represents how much time has passed (0 -> 1)
-  // or remaining fraction: 1 - progressFraction
   const remainingFraction = allocatedSeconds > 0 ? remainingSeconds / allocatedSeconds : 0;
   const strokeDashoffset = circumference * (1 - remainingFraction);
 
   // Dynamic colors based on time warning thresholds
-  let ringColor = 'stroke-cyan-400';
-  let glowColor = 'drop-shadow-[0_0_12px_rgba(34,211,238,0.4)]';
+  let ringColor = 'stroke-amber-500';
   let textColor = 'text-white';
   let statusBanner = null;
 
   if (isTimesUp) {
     ringColor = 'stroke-rose-500';
-    glowColor = 'drop-shadow-[0_0_16px_rgba(251,113,133,0.6)]';
     textColor = 'text-rose-400 animate-pulse';
     statusBanner = (
-      <div className="flex items-center gap-1.5 px-3 py-1 bg-rose-500/20 text-rose-300 border border-rose-500/40 rounded-full text-xs font-semibold animate-pulse">
+      <div className="flex items-center gap-1.5 px-3 py-1 bg-rose-500/20 text-rose-300 border border-rose-500/40 rounded-full text-xs font-semibold animate-pulse font-mono">
         <AlertTriangle className="w-3.5 h-3.5" />
         <span>Time&rsquo;s Up! Make your call.</span>
       </div>
     );
   } else if (isCritical) {
     ringColor = 'stroke-rose-400';
-    glowColor = 'drop-shadow-[0_0_14px_rgba(251,113,133,0.5)]';
     textColor = 'text-rose-300';
     statusBanner = (
-      <div className="flex items-center gap-1.5 px-3 py-1 bg-rose-500/10 text-rose-300 border border-rose-500/30 rounded-full text-xs font-medium animate-pulse">
+      <div className="flex items-center gap-1.5 px-3 py-1 bg-rose-500/10 text-rose-300 border border-rose-500/30 rounded-full text-xs font-medium animate-pulse font-mono">
         <AlertTriangle className="w-3.5 h-3.5" />
         <span>Final 60 seconds — wrap up logic!</span>
       </div>
     );
   } else if (isWarning) {
     ringColor = 'stroke-amber-400';
-    glowColor = 'drop-shadow-[0_0_12px_rgba(251,191,36,0.4)]';
     textColor = 'text-amber-300';
     statusBanner = (
-      <div className="flex items-center gap-1.5 px-3 py-1 bg-amber-500/10 text-amber-300 border border-amber-500/30 rounded-full text-xs font-medium">
+      <div className="flex items-center gap-1.5 px-3 py-1 bg-amber-500/10 text-amber-300 border border-amber-500/30 rounded-full text-xs font-medium font-mono">
         <Clock className="w-3.5 h-3.5" />
         <span>5 minutes remaining</span>
       </div>
@@ -96,27 +90,27 @@ export default function ChallengeTimer({ timer }) {
   };
 
   return (
-    <div className="bg-[#151C30] border border-[#29344D] rounded-2xl p-6 shadow-lg flex flex-col items-center gap-5">
+    <div className="bg-[#14161F] border border-[#2C3142] rounded-2xl p-6 shadow-sm flex flex-col items-center gap-5">
       {/* Timer Header & Preset Duration Selector */}
       <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-3">
         <div className="flex items-center gap-2">
-          <Clock className="w-4 h-4 text-purple-400" />
+          <Clock className="w-4 h-4 text-amber-400" />
           <span className="text-xs font-bold text-slate-200 uppercase tracking-wider font-mono">
             Challenge Timer
           </span>
         </div>
 
         {/* Preset Duration Buttons */}
-        <div className="flex items-center gap-1 bg-[#1D2740] p-1 rounded-xl border border-[#29344D]">
+        <div className="flex items-center gap-1 bg-[#1D202D] p-1 rounded-xl border border-[#2C3142]">
           {presets.map((mins) => (
             <button
               key={mins}
               onClick={() => setDuration(mins)}
               disabled={status === 'running'}
-              className={`px-2.5 py-1 text-xs font-mono font-medium rounded-lg transition-all ${
+              className={`px-2.5 py-1 text-xs font-mono font-medium rounded-lg transition-colors ${
                 currentMinutes === mins
-                  ? 'bg-purple-600 text-white shadow-sm'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-[#24304F] disabled:opacity-50 disabled:cursor-not-allowed'
+                  ? 'bg-amber-500 text-slate-950 font-semibold shadow-sm'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-[#25293A] disabled:opacity-50 disabled:cursor-not-allowed'
               }`}
             >
               {mins}m
@@ -128,8 +122,8 @@ export default function ChallengeTimer({ timer }) {
               setIsCustomModalOpen(true);
             }}
             disabled={status === 'running'}
-            className={`p-1.5 text-xs rounded-lg transition-all text-slate-400 hover:text-slate-200 hover:bg-[#24304F] disabled:opacity-50 disabled:cursor-not-allowed ${
-              !presets.includes(currentMinutes) ? 'bg-purple-600 text-white' : ''
+            className={`p-1.5 text-xs rounded-lg transition-colors text-slate-400 hover:text-slate-200 hover:bg-[#25293A] disabled:opacity-50 disabled:cursor-not-allowed ${
+              !presets.includes(currentMinutes) ? 'bg-amber-500 text-slate-950 font-semibold' : ''
             }`}
             title="Custom Duration"
             aria-label="Set custom duration"
@@ -147,7 +141,7 @@ export default function ChallengeTimer({ timer }) {
             cx="112"
             cy="112"
             r={radius}
-            stroke="#1D2740"
+            stroke="#1D202D"
             strokeWidth="8"
             fill="transparent"
           />
@@ -156,8 +150,8 @@ export default function ChallengeTimer({ timer }) {
             cx="112"
             cy="112"
             r={radius}
-            className={`transition-all duration-300 ${ringColor} ${glowColor}`}
-            strokeWidth="9"
+            className={`transition-all duration-300 ${ringColor}`}
+            strokeWidth="8"
             strokeDasharray={circumference}
             strokeDashoffset={strokeDashoffset}
             strokeLinecap="round"
@@ -192,9 +186,9 @@ export default function ChallengeTimer({ timer }) {
         {status === 'idle' && (
           <button
             onClick={() => startTimer()}
-            className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-semibold text-sm rounded-xl shadow-glow-purple transition-all hover:scale-105 active:scale-95"
+            className="flex items-center gap-2 px-6 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold text-sm rounded-xl transition-colors shadow-sm active:scale-98"
           >
-            <Play className="w-4 h-4 fill-white" />
+            <Play className="w-4 h-4 fill-slate-950" />
             <span>Start Challenge</span>
           </button>
         )}
@@ -203,14 +197,14 @@ export default function ChallengeTimer({ timer }) {
           <>
             <button
               onClick={pauseTimer}
-              className="flex items-center gap-2 px-5 py-2.5 bg-[#1D2740] hover:bg-[#24304F] text-slate-200 border border-[#29344D] font-semibold text-sm rounded-xl transition-all"
+              className="flex items-center gap-2 px-5 py-2.5 bg-[#1D202D] hover:bg-[#25293A] text-slate-200 border border-[#2C3142] font-semibold text-sm rounded-xl transition-colors"
             >
               <Pause className="w-4 h-4" />
               <span>Pause</span>
             </button>
             <button
               onClick={() => resetTimer()}
-              className="p-2.5 text-slate-400 hover:text-slate-200 hover:bg-[#1D2740] border border-[#29344D] rounded-xl transition-colors"
+              className="p-2.5 text-slate-400 hover:text-slate-200 hover:bg-[#1D202D] border border-[#2C3142] rounded-xl transition-colors"
               title="Reset Timer"
               aria-label="Reset Timer"
             >
@@ -223,14 +217,14 @@ export default function ChallengeTimer({ timer }) {
           <>
             <button
               onClick={resumeTimer}
-              className="flex items-center gap-2 px-5 py-2.5 bg-purple-600 hover:bg-purple-500 text-white font-semibold text-sm rounded-xl shadow-glow-purple transition-all"
+              className="flex items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold text-sm rounded-xl transition-colors shadow-sm"
             >
-              <Play className="w-4 h-4 fill-white" />
+              <Play className="w-4 h-4 fill-slate-950" />
               <span>Resume</span>
             </button>
             <button
               onClick={() => resetTimer()}
-              className="p-2.5 text-slate-400 hover:text-slate-200 hover:bg-[#1D2740] border border-[#29344D] rounded-xl transition-colors"
+              className="p-2.5 text-slate-400 hover:text-slate-200 hover:bg-[#1D202D] border border-[#2C3142] rounded-xl transition-colors"
               title="Reset Timer"
               aria-label="Reset Timer"
             >
@@ -242,7 +236,7 @@ export default function ChallengeTimer({ timer }) {
         {status === 'times_up' && (
           <button
             onClick={() => resetTimer()}
-            className="flex items-center gap-2 px-5 py-2.5 bg-[#1D2740] hover:bg-[#24304F] text-slate-200 border border-[#29344D] font-semibold text-sm rounded-xl transition-all"
+            className="flex items-center gap-2 px-5 py-2.5 bg-[#1D202D] hover:bg-[#25293A] text-slate-200 border border-[#2C3142] font-semibold text-sm rounded-xl transition-colors"
           >
             <RotateCcw className="w-4 h-4" />
             <span>Reset Timer</span>
@@ -277,21 +271,21 @@ export default function ChallengeTimer({ timer }) {
                 setCustomError('');
               }}
               placeholder="e.g. 25"
-              className="w-full px-3 py-2 bg-[#1D2740] border border-[#29344D] rounded-xl text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 font-mono"
+              className="w-full px-3 py-2 bg-[#1D202D] border border-[#2C3142] rounded-xl text-slate-100 text-sm focus:outline-none focus:ring-1 focus:ring-amber-500 font-mono"
               autoFocus
             />
           </div>
-          <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#29344D]">
+          <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#2C3142]">
             <button
               type="button"
               onClick={() => setIsCustomModalOpen(false)}
-              className="px-3 py-1.5 text-xs text-slate-300 hover:text-white bg-[#1D2740] rounded-lg border border-[#29344D]"
+              className="px-3 py-1.5 text-xs text-slate-300 hover:text-white bg-[#1D202D] rounded-lg border border-[#2C3142]"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-3.5 py-1.5 text-xs font-semibold text-white bg-purple-600 hover:bg-purple-500 rounded-lg shadow-glow-purple"
+              className="px-3.5 py-1.5 text-xs font-semibold text-slate-950 bg-amber-500 hover:bg-amber-400 rounded-lg shadow-sm"
             >
               Set Duration
             </button>

@@ -23,7 +23,7 @@ export default function Modal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200"
       role="dialog"
       aria-modal="true"
       aria-labelledby="modal-title"
@@ -33,17 +33,17 @@ export default function Modal({
 
       {/* Modal Dialog Card */}
       <div
-        className={`relative w-full ${maxWidth} bg-[#151C30] border border-[#29344D] rounded-2xl shadow-2xl overflow-hidden z-10 flex flex-col max-h-[90vh]`}
+        className={`relative w-full ${maxWidth} bg-[#14161F] border border-[#2C3142] rounded-2xl shadow-xl overflow-hidden z-10 flex flex-col max-h-[90vh]`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#29344D] bg-[#1D2740]/40">
-          <h2 id="modal-title" className="text-lg font-semibold text-slate-100">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#2C3142] bg-[#1D202D]/60">
+          <h2 id="modal-title" className="text-base font-semibold text-slate-100 font-mono">
             {title}
           </h2>
           <button
             onClick={onClose}
-            className="p-1 text-slate-400 hover:text-slate-200 rounded-lg hover:bg-[#1D2740] transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className="p-1 text-slate-400 hover:text-slate-200 rounded-lg hover:bg-[#1D202D] transition-colors focus:outline-none focus:ring-1 focus:ring-amber-500"
             aria-label="Close modal"
           >
             <X className="w-5 h-5" />

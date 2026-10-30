@@ -18,7 +18,7 @@ export default function ConfirmDialog({
         <div className="flex items-start gap-3">
           <div
             className={`p-2.5 rounded-xl flex-shrink-0 ${
-              isDestructive ? 'bg-rose-500/10 text-rose-400' : 'bg-cyan-500/10 text-cyan-400'
+              isDestructive ? 'bg-rose-500/10 text-rose-400' : 'bg-amber-500/10 text-amber-400'
             }`}
           >
             <AlertTriangle className="w-5 h-5" />
@@ -26,11 +26,11 @@ export default function ConfirmDialog({
           <p className="text-sm text-slate-300 leading-relaxed pt-1">{message}</p>
         </div>
 
-        <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#29344D]">
+        <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#2C3142]">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 text-sm font-medium text-slate-300 hover:text-slate-100 bg-[#1D2740] hover:bg-[#24304F] rounded-lg transition-colors border border-[#29344D]"
+            className="px-4 py-2 text-sm font-medium text-slate-300 hover:text-slate-100 bg-[#1D202D] hover:bg-[#25293A] rounded-lg transition-colors border border-[#2C3142]"
           >
             {cancelLabel}
           </button>
@@ -40,10 +40,10 @@ export default function ConfirmDialog({
               onConfirm();
               onClose();
             }}
-            className={`px-4 py-2 text-sm font-medium text-white rounded-lg transition-colors shadow-sm ${
+            className={`px-4 py-2 text-sm font-semibold rounded-lg transition-colors shadow-sm ${
               isDestructive
-                ? 'bg-rose-600 hover:bg-rose-500 shadow-rose-600/20'
-                : 'bg-purple-600 hover:bg-purple-500 shadow-purple-600/20'
+                ? 'bg-rose-600 hover:bg-rose-500 text-white'
+                : 'bg-amber-500 hover:bg-amber-400 text-slate-950'
             }`}
           >
             {confirmLabel}

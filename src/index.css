@@ -5,8 +5,8 @@
 @layer base {
   body {
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    background-color: #0B1020;
-    color: #F1F5F9;
+    background-color: #0C0D12;
+    color: #F8FAFC;
   }
 
   code, pre, .font-mono {
@@ -21,34 +21,29 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #0B1020;
+  background: #0C0D12;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #29344D;
+  background: #2C3142;
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #8B5CF6;
+  background: #F59E0B;
 }
 
-/* Custom glass card utilities */
+/* Developer panel utilities (matte, crisp, zero neon blur) */
 .glass-panel {
-  background: rgba(21, 28, 48, 0.75);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid #29344D;
+  background: #14161F;
+  border: 1px solid #2C3142;
 }
 
 .glass-panel-elevated {
-  background: rgba(29, 39, 64, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(139, 92, 246, 0.2);
+  background: #1D202D;
+  border: 1px solid #3A4056;
 }
 
 .clip-triangle {
   clip-path: polygon(50% 100%, 0 0, 100% 0);
 }
-

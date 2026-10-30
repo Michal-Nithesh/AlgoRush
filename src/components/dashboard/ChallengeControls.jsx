@@ -31,7 +31,6 @@ export default function ChallengeControls({
   // Keyboard shortcut listener
   useEffect(() => {
     const handleKeyDown = (e) => {
-      // Ignore if typing inside text input, textarea, select, or contenteditable
       const target = e.target;
       if (
         target &&
@@ -43,17 +42,15 @@ export default function ChallengeControls({
         return;
       }
 
-      // Ignore if any modal or confirm dialog is currently open
       if (document.querySelector('[role="dialog"]') || isAbandonConfirmOpen) {
         return;
       }
 
-      // Avoid repeated triggers while key is held down
       if (e.repeat) return;
 
       // Space: Start, Pause, or Resume countdown
       if (e.code === 'Space') {
-        e.preventDefault(); // Stop page scrolling
+        e.preventDefault();
         if (status === 'idle') {
           startTimer();
         } else if (status === 'running') {
@@ -114,16 +111,16 @@ export default function ChallengeControls({
   };
 
   return (
-    <div className="bg-[#151C30] border border-[#29344D] rounded-2xl p-5 shadow-sm flex flex-col gap-3">
+    <div className="bg-[#14161F] border border-[#2C3142] rounded-2xl p-5 shadow-sm flex flex-col gap-3">
       <div className="text-xs font-bold text-slate-300 uppercase tracking-wider font-mono flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span>Challenge Controls</span>
-          <span className="hidden sm:inline-flex items-center text-[10px] text-slate-400 font-mono bg-[#1D2740] px-1.5 py-0.5 rounded border border-[#29344D]">
+          <span className="hidden sm:inline-flex items-center text-[10px] text-slate-400 font-mono bg-[#1D202D] px-1.5 py-0.5 rounded border border-[#2C3142]">
             Hotkeys Active
           </span>
         </div>
         {isChallengeActive ? (
-          <span className="text-[11px] font-mono text-cyan-400 font-medium">
+          <span className="text-[11px] font-mono text-amber-400 font-medium">
             ● Timer in progress
           </span>
         ) : (
@@ -171,7 +168,7 @@ export default function ChallengeControls({
             else if (status === 'running') pauseTimer();
             else if (status === 'paused') resumeTimer();
           }}
-          className="flex flex-col items-center justify-center gap-1 py-2.5 px-3 bg-[#1D2740] hover:bg-[#24304F] text-slate-200 border border-[#29344D] rounded-xl text-xs font-medium transition-all group"
+          className="flex flex-col items-center justify-center gap-1 py-2.5 px-3 bg-[#1D202D] hover:bg-[#25293A] text-slate-200 border border-[#2C3142] rounded-xl text-xs font-medium transition-all group"
           title={
             status === 'running'
               ? 'Pause Countdown (Hotkey: Space)'
@@ -186,7 +183,7 @@ export default function ChallengeControls({
               </>
             ) : (
               <>
-                <Play className="w-4 h-4 text-cyan-400 fill-cyan-400/20" />
+                <Play className="w-4 h-4 text-amber-400 fill-amber-400/20" />
                 <span>{status === 'paused' ? 'Resume' : 'Start'}</span>
               </>
             )}
@@ -205,7 +202,7 @@ export default function ChallengeControls({
               resetTimer();
             }
           }}
-          className="flex flex-col items-center justify-center gap-1 py-2.5 px-3 bg-[#1D2740]/60 hover:bg-rose-900/20 text-slate-400 hover:text-rose-300 border border-[#29344D] hover:border-rose-500/30 rounded-xl text-xs font-medium transition-all group"
+          className="flex flex-col items-center justify-center gap-1 py-2.5 px-3 bg-[#1D202D]/60 hover:bg-rose-950/20 text-slate-400 hover:text-rose-300 border border-[#2C3142] hover:border-rose-500/30 rounded-xl text-xs font-medium transition-all group"
           title="Reset timer or abandon current attempt (Hotkey: R)"
         >
           <div className="flex items-center gap-1.5">
@@ -233,7 +230,7 @@ export default function ChallengeControls({
           href={problem.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center justify-center gap-2 py-2 px-3 text-xs text-cyan-400 hover:text-cyan-300 bg-cyan-950/20 hover:bg-cyan-950/40 border border-cyan-800/30 rounded-xl transition-colors mt-1 font-mono"
+          className="flex items-center justify-center gap-2 py-2 px-3 text-xs text-sky-400 hover:text-sky-300 bg-sky-950/20 hover:bg-sky-950/40 border border-sky-800/30 rounded-xl transition-colors mt-1 font-mono"
         >
           <span>Open on LeetCode / Coding Platform</span>
           <ExternalLink className="w-3.5 h-3.5" />

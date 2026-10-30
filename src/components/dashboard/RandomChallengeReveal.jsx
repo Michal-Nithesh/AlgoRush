@@ -82,7 +82,6 @@ export default function RandomChallengeReveal({
   const executePick = () => {
     if (eligibleProblems.length === 0) return;
 
-    // Selection utility chooses the problem first
     const { selectedProblem, isRecycledFromSession } = selectRandomProblem(
       eligibleProblems,
       sessionSolvedIds
@@ -97,7 +96,6 @@ export default function RandomChallengeReveal({
       playTickSound();
     }
 
-    // Brief shuffle animation: cycle 3-4 random titles for 450ms, then reveal chosen problem
     let ticks = 0;
     const maxTicks = 4;
     const candidateTitles = eligibleProblems.map((p) => p.title);
@@ -168,7 +166,6 @@ export default function RandomChallengeReveal({
     }
   };
 
-  // Map topicIds to human-readable names
   const getTopicNames = (topicIds = []) => {
     return topicIds.map((id) => {
       const found = topics.find((t) => t.id === id);
@@ -177,23 +174,23 @@ export default function RandomChallengeReveal({
   };
 
   return (
-    <div className="bg-[#151C30] border border-[#29344D] rounded-2xl p-5 shadow-sm flex flex-col gap-4">
+    <div className="bg-[#14161F] border border-[#2C3142] rounded-2xl p-5 shadow-sm flex flex-col gap-4">
       {/* Top Bar: Mode Switcher */}
-      <div className="flex items-center justify-between border-b border-[#29344D] pb-3">
+      <div className="flex items-center justify-between border-b border-[#2C3142] pb-3">
         <div className="flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-purple-400" />
+          <Sparkles className="w-4 h-4 text-amber-400" />
           <h2 className="text-xs font-bold text-slate-100 uppercase tracking-wider font-mono">
             Challenge Picker
           </h2>
         </div>
 
         {/* Tab Switcher: Single vs Queue */}
-        <div className="flex items-center gap-1 bg-[#0B1020] p-1 rounded-xl border border-[#29344D]">
+        <div className="flex items-center gap-1 bg-[#0C0D12] p-1 rounded-xl border border-[#2C3142]">
           <button
             onClick={() => setActiveMode('single')}
             className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
               activeMode === 'single'
-                ? 'bg-purple-600/30 text-purple-200 border border-purple-500/40 shadow-sm'
+                ? 'bg-amber-500/15 text-amber-300 border border-amber-500/30 shadow-sm'
                 : 'text-slate-400 hover:text-slate-200'
             }`}
           >
@@ -205,7 +202,7 @@ export default function RandomChallengeReveal({
             onClick={() => setActiveMode('queue')}
             className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
               activeMode === 'queue'
-                ? 'bg-purple-600/30 text-purple-200 border border-purple-500/40 shadow-sm'
+                ? 'bg-amber-500/15 text-amber-300 border border-amber-500/30 shadow-sm'
                 : 'text-slate-400 hover:text-slate-200'
             }`}
           >
@@ -220,22 +217,22 @@ export default function RandomChallengeReveal({
         <div className="space-y-4">
           {/* Empty State: No Topics Selected */}
           {selectedTopicIds.length === 0 ? (
-            <div className="py-8 px-4 text-center border border-dashed border-[#29344D] rounded-xl bg-[#0B1020]/40 flex flex-col items-center gap-2.5">
+            <div className="py-8 px-4 text-center border border-dashed border-[#2C3142] rounded-xl bg-[#0C0D12]/40 flex flex-col items-center gap-2.5">
               <Layers className="w-8 h-8 text-slate-500" />
               <h3 className="text-sm font-semibold text-slate-200">No Topics Selected</h3>
               <p className="text-xs text-slate-400 max-w-sm">
-                Select one or more topics from the Topic Explorer on the left to activate the random challenge pool.
+                Select one or more topics from the Topic Explorer to activate the random challenge pool.
               </p>
               <button
                 onClick={selectAllTopics}
-                className="mt-1 px-3 py-1.5 bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/30 rounded-lg text-xs font-medium transition-colors"
+                className="mt-1 px-3 py-1.5 bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/30 rounded-lg text-xs font-medium transition-colors"
               >
                 Select All Topics
               </button>
             </div>
           ) : eligibleProblems.length === 0 ? (
             /* Empty State: No Problems Match Current Filters */
-            <div className="py-8 px-4 text-center border border-dashed border-[#29344D] rounded-xl bg-[#0B1020]/40 flex flex-col items-center gap-2.5">
+            <div className="py-8 px-4 text-center border border-dashed border-[#2C3142] rounded-xl bg-[#0C0D12]/40 flex flex-col items-center gap-2.5">
               <AlertCircle className="w-8 h-8 text-amber-500/80" />
               <h3 className="text-sm font-semibold text-slate-200">No Matching Problems Found</h3>
               <p className="text-xs text-slate-400 max-w-sm">
@@ -246,7 +243,7 @@ export default function RandomChallengeReveal({
                 {difficultyFilter !== 'all' && (
                   <button
                     onClick={() => setDifficultyFilter('all')}
-                    className="px-3 py-1.5 bg-[#1D2740] hover:bg-[#24304F] text-slate-300 border border-[#29344D] rounded-lg text-xs font-medium transition-colors"
+                    className="px-3 py-1.5 bg-[#1D202D] hover:bg-[#25293A] text-slate-300 border border-[#2C3142] rounded-lg text-xs font-medium transition-colors"
                   >
                     Reset Difficulty to All
                   </button>
@@ -254,7 +251,7 @@ export default function RandomChallengeReveal({
                 {forRevisionOnly && (
                   <button
                     onClick={() => setForRevisionOnly(false)}
-                    className="px-3 py-1.5 bg-[#1D2740] hover:bg-[#24304F] text-slate-300 border border-[#29344D] rounded-lg text-xs font-medium transition-colors"
+                    className="px-3 py-1.5 bg-[#1D202D] hover:bg-[#25293A] text-slate-300 border border-[#2C3142] rounded-lg text-xs font-medium transition-colors"
                   >
                     Disable Revision Filter
                   </button>
@@ -263,12 +260,10 @@ export default function RandomChallengeReveal({
             </div>
           ) : revealState === 'idle' ? (
             /* IDLE STATE: Ready to Pick */
-            <div className="flex flex-col items-center text-center py-6 px-4 bg-[#0B1020]/60 border border-[#29344D] rounded-xl gap-4">
-              {/* Minimal Abstract Algorithm SVG Illustration */}
-              <div className="w-14 h-14 rounded-2xl bg-[#1D2740] border border-[#29344D] flex items-center justify-center text-purple-400 relative">
-                <Shuffle className="w-6 h-6 text-purple-400" />
-                <span className="absolute -top-1 -right-1 w-3 h-3 bg-cyan-400 rounded-full animate-ping opacity-75" />
-                <span className="absolute -top-1 -right-1 w-3 h-3 bg-cyan-400 rounded-full" />
+            <div className="flex flex-col items-center text-center py-6 px-4 bg-[#0C0D12]/70 border border-[#2C3142] rounded-xl gap-4">
+              <div className="w-14 h-14 rounded-2xl bg-[#1D202D] border border-[#2C3142] flex items-center justify-center text-amber-400 shadow-sm relative">
+                <Shuffle className="w-6 h-6 text-amber-400" />
+                <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-amber-400 rounded-full" />
               </div>
 
               <div>
@@ -282,49 +277,49 @@ export default function RandomChallengeReveal({
 
               {/* Selection Summary Tags */}
               <div className="flex flex-wrap items-center justify-center gap-2 text-[11px] font-mono text-slate-400">
-                <span className="px-2.5 py-1 rounded-md bg-[#151C30] border border-[#29344D]">
+                <span className="px-2.5 py-1 rounded-md bg-[#14161F] border border-[#2C3142]">
                   <strong className="text-slate-200">{selectedTopicIds.length}</strong> Topics Active
                 </span>
-                <span className="px-2.5 py-1 rounded-md bg-[#151C30] border border-[#29344D]">
+                <span className="px-2.5 py-1 rounded-md bg-[#14161F] border border-[#2C3142]">
                   Diff: <strong className="text-slate-200 uppercase">{difficultyFilter}</strong>
                 </span>
                 {forRevisionOnly && (
-                  <span className="px-2.5 py-1 rounded-md bg-amber-500/10 border border-amber-500/30 text-amber-300 flex items-center gap-1">
+                  <span className="px-2.5 py-1 rounded-md bg-rose-500/10 border border-rose-500/20 text-rose-300 flex items-center gap-1">
                     <BookmarkCheck className="w-3 h-3" />
                     Revision Only
                   </span>
                 )}
-                <span className="px-2.5 py-1 rounded-md bg-purple-950/30 border border-purple-800/40 text-purple-300">
-                  <strong className="text-cyan-300 font-bold">{eligibleProblems.length}</strong> Available
+                <span className="px-2.5 py-1 rounded-md bg-amber-500/10 border border-amber-500/25 text-amber-300">
+                  <strong className="text-amber-400 font-bold">{eligibleProblems.length}</strong> Available
                 </span>
               </div>
 
-              {/* Big Prominent Pick Action */}
+              {/* Primary Action Button */}
               <button
                 onClick={handlePickClick}
-                className="flex items-center justify-center gap-2 px-6 py-2.5 bg-purple-600 hover:bg-purple-500 text-white rounded-xl text-sm font-semibold transition-all shadow-md shadow-purple-600/20 active:scale-[0.98] mt-1"
+                className="flex items-center justify-center gap-2 px-6 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-xl text-sm font-semibold transition-all shadow-sm active:scale-[0.98] mt-1"
               >
                 <Shuffle className="w-4 h-4" />
                 <span>Pick Random Problem</span>
               </button>
             </div>
           ) : revealState === 'shuffling' ? (
-            /* SHUFFLING STATE: Brief card animation */
-            <div className="flex flex-col items-center justify-center text-center py-10 px-4 bg-[#0B1020]/70 border border-purple-500/40 rounded-xl gap-3">
-              <div className="w-10 h-10 rounded-xl bg-purple-600/20 border border-purple-500/30 flex items-center justify-center text-purple-300 animate-spin">
+            /* SHUFFLING STATE */
+            <div className="flex flex-col items-center justify-center text-center py-10 px-4 bg-[#0C0D12]/70 border border-amber-500/30 rounded-xl gap-3">
+              <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 animate-spin">
                 <Shuffle className="w-5 h-5" />
               </div>
-              <div className="text-xs font-mono text-purple-300 uppercase tracking-widest animate-pulse">
+              <div className="text-xs font-mono text-amber-400 uppercase tracking-widest animate-pulse">
                 Selecting Challenge...
               </div>
-              <div className="text-sm font-semibold text-slate-100 max-w-sm truncate h-6 font-mono px-4 py-0.5 rounded bg-[#1D2740] border border-[#29344D]">
-                {shuffleDisplayTitle || 'Evaluating problem candidates...'}
+              <div className="text-sm font-semibold text-slate-100 max-w-sm truncate h-6 font-mono px-4 py-0.5 rounded bg-[#1D202D] border border-[#2C3142]">
+                {shuffleDisplayTitle || 'Evaluating candidate problems...'}
               </div>
             </div>
           ) : (
-            /* REVEALED STATE: Clean, high-density challenge card */
+            /* REVEALED STATE */
             revealedProblem && (
-              <div className="bg-[#0B1020]/80 border border-purple-500/30 rounded-xl p-4 flex flex-col gap-3">
+              <div className="bg-[#0C0D12]/80 border border-amber-500/30 rounded-xl p-4 flex flex-col gap-3">
                 {/* Meta Header */}
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
@@ -334,14 +329,14 @@ export default function RandomChallengeReveal({
                     </span>
                     <DifficultyBadge difficulty={revealedProblem.difficulty} size="sm" />
                     {revealedProblem.forRevision && (
-                      <span className="text-[10px] font-mono text-amber-300 bg-amber-500/10 border border-amber-500/30 px-2 py-0.5 rounded-full">
+                      <span className="text-[10px] font-mono text-rose-300 bg-rose-500/10 border border-rose-500/30 px-2 py-0.5 rounded-full">
                         Revision
                       </span>
                     )}
                   </div>
 
                   <div className="flex items-center gap-1 text-xs text-slate-400 font-mono">
-                    <Clock className="w-3.5 h-3.5 text-cyan-400" />
+                    <Clock className="w-3.5 h-3.5 text-amber-400" />
                     <span>Est. {revealedProblem.estimatedTime || 20}m</span>
                   </div>
                 </div>
@@ -355,9 +350,9 @@ export default function RandomChallengeReveal({
                     {getTopicNames(revealedProblem.topicIds).map((name) => (
                       <span
                         key={name}
-                        className="inline-flex items-center gap-1 text-[10px] font-mono text-purple-300 bg-purple-950/40 border border-purple-800/40 px-2 py-0.5 rounded-md"
+                        className="inline-flex items-center gap-1 text-[10px] font-mono text-amber-300 bg-amber-500/10 border border-amber-500/25 px-2 py-0.5 rounded-md"
                       >
-                        <Tag className="w-2.5 h-2.5 text-purple-400" />
+                        <Tag className="w-2.5 h-2.5 text-amber-400" />
                         {name}
                       </span>
                     ))}
@@ -366,17 +361,17 @@ export default function RandomChallengeReveal({
 
                 {/* Solved In Session Recycled Warning */}
                 {isRecycled && (
-                  <div className="text-[11px] text-amber-300 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-lg">
+                  <div className="text-[11px] text-amber-300 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-lg font-mono">
                     Revisiting problem already solved in this session.
                   </div>
                 )}
 
                 {/* Action Buttons */}
-                <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-[#29344D]">
+                <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-[#2C3142]">
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => onStartChallenge(revealedProblem)}
-                      className="flex items-center gap-1.5 px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-xl text-xs font-semibold transition-colors shadow-sm"
+                      className="flex items-center gap-1.5 px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-xl text-xs font-semibold transition-colors shadow-sm"
                       title="Set timer and start countdown"
                     >
                       <Play className="w-3.5 h-3.5 fill-current" />
@@ -385,10 +380,10 @@ export default function RandomChallengeReveal({
 
                     <button
                       onClick={handlePickClick}
-                      className="flex items-center gap-1.5 px-3 py-2 bg-[#1D2740] hover:bg-[#24304F] text-slate-200 border border-[#29344D] rounded-xl text-xs font-medium transition-colors"
+                      className="flex items-center gap-1.5 px-3 py-2 bg-[#1D202D] hover:bg-[#25293A] text-slate-200 border border-[#2C3142] rounded-xl text-xs font-medium transition-colors"
                       title="Pick another random challenge"
                     >
-                      <Shuffle className="w-3.5 h-3.5 text-purple-400" />
+                      <Shuffle className="w-3.5 h-3.5 text-amber-400" />
                       <span>Pick Another</span>
                     </button>
                   </div>
@@ -399,7 +394,7 @@ export default function RandomChallengeReveal({
                         href={revealedProblem.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-1 text-xs text-cyan-400 hover:text-cyan-300 px-2.5 py-1.5 rounded-lg hover:bg-cyan-950/30 transition-colors"
+                        className="flex items-center gap-1 text-xs text-sky-400 hover:text-sky-300 px-2.5 py-1.5 rounded-lg hover:bg-sky-950/30 transition-colors font-mono"
                       >
                         <span>External Link</span>
                         <ExternalLink className="w-3 h-3" />
@@ -425,7 +420,7 @@ export default function RandomChallengeReveal({
       {activeMode === 'queue' && (
         <div className="space-y-4">
           {/* Controls: Count and Generate */}
-          <div className="p-3.5 bg-[#0B1020]/60 border border-[#29344D] rounded-xl flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div className="p-3.5 bg-[#0C0D12]/70 border border-[#2C3142] rounded-xl flex flex-wrap items-center justify-between gap-3 text-xs">
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-1.5">
                 <span className="text-slate-400 font-mono">Count:</span>
@@ -435,8 +430,8 @@ export default function RandomChallengeReveal({
                     onClick={() => setQueueCount(num)}
                     className={`px-2 py-0.5 rounded font-mono border transition-colors ${
                       queueCount === num
-                        ? 'bg-purple-600/30 text-purple-200 border-purple-500/40'
-                        : 'bg-[#1D2740] text-slate-400 border-[#29344D] hover:text-slate-200'
+                        ? 'bg-amber-500/20 text-amber-200 border-amber-500/40'
+                        : 'bg-[#1D202D] text-slate-400 border-[#2C3142] hover:text-slate-200'
                     }`}
                   >
                     {num}
@@ -449,7 +444,7 @@ export default function RandomChallengeReveal({
                 <select
                   value={queueDifficulty}
                   onChange={(e) => setQueueDifficulty(e.target.value)}
-                  className="bg-[#1D2740] border border-[#29344D] text-slate-200 rounded px-2 py-0.5 text-xs outline-none"
+                  className="bg-[#1D202D] border border-[#2C3142] text-slate-200 rounded px-2 py-0.5 text-xs outline-none font-mono"
                 >
                   <option value="all">Any / Filtered</option>
                   <option value="easy">Easy Only</option>
@@ -461,7 +456,7 @@ export default function RandomChallengeReveal({
 
             <button
               onClick={handleGenerateQueue}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-purple-600 hover:bg-purple-500 text-white rounded-lg text-xs font-semibold transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-lg text-xs font-semibold transition-colors shadow-sm"
             >
               <Shuffle className="w-3.5 h-3.5" />
               <span>Generate Session</span>
@@ -470,7 +465,7 @@ export default function RandomChallengeReveal({
 
           {/* Queue List Preview */}
           {practiceQueue.length === 0 ? (
-            <div className="py-8 px-4 text-center border border-dashed border-[#29344D] rounded-xl bg-[#0B1020]/40 flex flex-col items-center gap-2">
+            <div className="py-8 px-4 text-center border border-dashed border-[#2C3142] rounded-xl bg-[#0C0D12]/40 flex flex-col items-center gap-2">
               <ListOrdered className="w-8 h-8 text-slate-500" />
               <h3 className="text-sm font-semibold text-slate-200">No Session Generated</h3>
               <p className="text-xs text-slate-400 max-w-sm">
@@ -484,14 +479,14 @@ export default function RandomChallengeReveal({
                 <span>
                   Problem {currentQueueIndex + 1} of {practiceQueue.length}
                 </span>
-                <span className="text-cyan-400">
+                <span className="text-amber-400">
                   Est. Total: ~{queueTotalMinutes} min
                 </span>
               </div>
 
               {/* Current Active Problem in Queue */}
               {practiceQueue[currentQueueIndex] && (
-                <div className="p-4 bg-[#0B1020]/80 border border-purple-500/30 rounded-xl space-y-3">
+                <div className="p-4 bg-[#0C0D12]/80 border border-amber-500/30 rounded-xl space-y-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <DifficultyBadge
@@ -503,7 +498,7 @@ export default function RandomChallengeReveal({
                       </span>
                     </div>
 
-                    <span className="text-xs font-mono text-purple-300 bg-purple-900/30 px-2 py-0.5 rounded border border-purple-800/40">
+                    <span className="text-xs font-mono text-amber-300 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/25">
                       Step {currentQueueIndex + 1}
                     </span>
                   </div>
@@ -512,10 +507,10 @@ export default function RandomChallengeReveal({
                     {practiceQueue[currentQueueIndex].title}
                   </h3>
 
-                  <div className="flex items-center justify-between gap-2 pt-2 border-t border-[#29344D]">
+                  <div className="flex items-center justify-between gap-2 pt-2 border-t border-[#2C3142]">
                     <button
                       onClick={() => onStartChallenge(practiceQueue[currentQueueIndex])}
-                      className="flex items-center gap-1.5 px-3 py-1.5 bg-purple-600 hover:bg-purple-500 text-white rounded-lg text-xs font-semibold transition-colors"
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-lg text-xs font-semibold transition-colors"
                     >
                       <Play className="w-3.5 h-3.5 fill-current" />
                       <span>Start Problem</span>
@@ -525,7 +520,7 @@ export default function RandomChallengeReveal({
                       {currentQueueIndex + 1 < practiceQueue.length && (
                         <button
                           onClick={handleQueueNext}
-                          className="flex items-center gap-1 px-3 py-1.5 bg-[#1D2740] hover:bg-[#24304F] text-slate-200 border border-[#29344D] rounded-lg text-xs font-medium transition-colors"
+                          className="flex items-center gap-1 px-3 py-1.5 bg-[#1D202D] hover:bg-[#25293A] text-slate-200 border border-[#2C3142] rounded-lg text-xs font-medium transition-colors"
                         >
                           <span>Next</span>
                           <ArrowRight className="w-3.5 h-3.5" />
@@ -558,10 +553,10 @@ export default function RandomChallengeReveal({
                     }}
                     className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium cursor-pointer border transition-colors ${
                       idx === currentQueueIndex
-                        ? 'bg-purple-950/30 border-purple-500/40 text-purple-200'
+                        ? 'bg-amber-500/15 border-amber-500/30 text-amber-200'
                         : idx < currentQueueIndex
-                        ? 'bg-[#1D2740]/20 border-[#29344D]/50 text-slate-500 line-through'
-                        : 'bg-[#1D2740]/40 border-[#29344D] text-slate-400 hover:text-slate-200'
+                        ? 'bg-[#1D202D]/20 border-[#2C3142]/40 text-slate-500 line-through'
+                        : 'bg-[#1D202D]/40 border-[#2C3142] text-slate-400 hover:text-slate-200'
                     }`}
                   >
                     <div className="flex items-center gap-2 truncate">

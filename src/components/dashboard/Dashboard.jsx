@@ -115,13 +115,8 @@ export default function Dashboard() {
     <div className="space-y-6">
       {/* 2-Column Responsive Dashboard Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* Left Column: Topic Explorer (5 cols on large screens) */}
+        {/* Left Column: Challenge Picker & Topic Explorer (5 cols on large screens) */}
         <div className="lg:col-span-5 flex flex-col gap-6">
-          <TopicExplorer />
-        </div>
-
-        {/* Right Column: Challenge Reveal, Problem Card, Timer & Controls (7 cols on large screens) */}
-        <div className="lg:col-span-7 flex flex-col gap-6">
           <RandomChallengeReveal
             onProblemSelected={handleProblemSelected}
             onStartChallenge={handleStartChallenge}
@@ -129,6 +124,11 @@ export default function Dashboard() {
             onRequestAbandon={handleRequestAbandon}
           />
 
+          <TopicExplorer />
+        </div>
+
+        {/* Right Column: Problem Question Card, Timer & Challenge Controls (7 cols on large screens) */}
+        <div className="lg:col-span-7 flex flex-col gap-6">
           <SelectedProblemCard
             problem={selectedProblem}
             isChallengeActive={isChallengeActive}

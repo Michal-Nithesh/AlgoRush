@@ -6,8 +6,6 @@ import confetti from 'canvas-confetti';
 import {
   CheckCircle2,
   XCircle,
-  SkipForward,
-  Flag,
   Clock,
   Sparkles,
   BookmarkCheck,
@@ -34,7 +32,7 @@ function ChallengeResultContent({
           particleCount: 60,
           spread: 70,
           origin: { y: 0.6 },
-          colors: ['#8B5CF6', '#22D3EE', '#34D399', '#F472B6'],
+          colors: ['#F59E0B', '#10B981', '#F43F5E', '#38BDF8'],
         });
       } catch {
         // Ignore if canvas-confetti is unavailable
@@ -61,21 +59,21 @@ function ChallengeResultContent({
     },
     skipped: {
       title: 'Problem Skipped',
-      badgeColor: 'bg-slate-500/20 text-slate-300 border-slate-500/40',
-      icon: <SkipForward className="w-6 h-6 text-slate-400" />,
-      subtext: 'Problem skipped for now. It remains in your practice pool.',
+      badgeColor: 'bg-slate-700 text-slate-300 border-slate-600',
+      icon: <Clock className="w-6 h-6 text-slate-400" />,
+      subtext: 'Moved on to the next challenge.',
     },
     abandoned: {
       title: 'Challenge Abandoned',
-      badgeColor: 'bg-slate-500/20 text-slate-300 border-slate-500/40',
-      icon: <Flag className="w-6 h-6 text-slate-400" />,
-      subtext: 'Countdown reset. Ready to pick your next target.',
+      badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/40',
+      icon: <Clock className="w-6 h-6 text-amber-400" />,
+      subtext: 'Session stopped before completion.',
     },
   }[status] || {
-    title: 'Challenge Result',
-    badgeColor: 'bg-purple-500/20 text-purple-300 border-purple-500/40',
-    icon: <Sparkles className="w-6 h-6 text-purple-400" />,
-    subtext: 'Challenge completed.',
+    title: 'Challenge Finished',
+    badgeColor: 'bg-slate-700 text-slate-300',
+    icon: <CheckCircle2 className="w-6 h-6 text-slate-400" />,
+    subtext: 'Session ended.',
   };
 
   const handleSaveAndClose = () => {
@@ -84,11 +82,11 @@ function ChallengeResultContent({
       problemTitle: problem.title,
       topicIds: problem.topicIds,
       difficulty: problem.difficulty,
+      timeAllocatedMinutes,
+      timeUsedSeconds,
       status,
       notes: notes.trim(),
       forRevision,
-      timeAllocatedMinutes,
-      timeUsedSeconds,
     });
     onClose();
   };
@@ -99,28 +97,26 @@ function ChallengeResultContent({
       problemTitle: problem.title,
       topicIds: problem.topicIds,
       difficulty: problem.difficulty,
+      timeAllocatedMinutes,
+      timeUsedSeconds,
       status,
       notes: notes.trim(),
       forRevision,
-      timeAllocatedMinutes,
-      timeUsedSeconds,
     });
-    onClose();
     onSpinAnother();
+    onClose();
   };
 
   return (
-    <div className="space-y-5">
-      {/* Banner with Status & Icon */}
-      <div className="flex items-center gap-3.5 p-4 rounded-xl bg-[#1D2740]/60 border border-[#29344D]">
-        <div className="p-2.5 rounded-xl bg-[#151C30] border border-[#29344D]">
-          {statusConfig.icon}
-        </div>
+    <div className="space-y-4">
+      {/* Header Banner */}
+      <div className="flex items-start gap-3.5 p-3.5 rounded-xl bg-[#1D202D] border border-[#2C3142]">
+        <div className="flex-shrink-0 mt-0.5">{statusConfig.icon}</div>
         <div>
           <div className="flex items-center gap-2">
-            <h3 className="text-base font-bold text-white">{statusConfig.title}</h3>
+            <h3 className="text-base font-bold text-white font-mono">{statusConfig.title}</h3>
             <span
-              className={`text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded border ${statusConfig.badgeColor}`}
+              className={`text-[10px] uppercase font-bold font-mono tracking-wider px-2 py-0.5 rounded border ${statusConfig.badgeColor}`}
             >
               {status}
             </span>
@@ -130,7 +126,7 @@ function ChallengeResultContent({
       </div>
 
       {/* Problem Summary & Time Stats */}
-      <div className="grid grid-cols-2 gap-3 p-3.5 rounded-xl bg-[#0B1020]/60 border border-[#29344D]">
+      <div className="grid grid-cols-2 gap-3 p-3.5 rounded-xl bg-[#0C0D12]/80 border border-[#2C3142]">
         <div>
           <span className="text-[11px] text-slate-400 block mb-1">Target Problem</span>
           <div className="flex items-center gap-2">
@@ -141,10 +137,10 @@ function ChallengeResultContent({
           </div>
         </div>
 
-        <div className="border-l border-[#29344D] pl-3">
+        <div className="border-l border-[#2C3142] pl-3">
           <span className="text-[11px] text-slate-400 block mb-1">Time Performance</span>
           <div className="flex items-center gap-1.5 text-xs text-slate-200 font-mono">
-            <Clock className="w-3.5 h-3.5 text-cyan-400" />
+            <Clock className="w-3.5 h-3.5 text-amber-400" />
             <span>Used: {formattedUsed} / {timeAllocatedMinutes}m</span>
           </div>
         </div>
@@ -153,7 +149,7 @@ function ChallengeResultContent({
       {/* Personal Notes Textarea */}
       <div>
         <label className="block text-xs font-semibold text-slate-200 mb-1.5 flex items-center gap-1.5">
-          <FileText className="w-3.5 h-3.5 text-purple-400" />
+          <FileText className="w-3.5 h-3.5 text-amber-400" />
           <span>Personal Notes & Pattern Takeaways</span>
         </label>
         <textarea
@@ -161,7 +157,7 @@ function ChallengeResultContent({
           onChange={(e) => setNotes(e.target.value)}
           rows={3}
           placeholder="Record time/space complexity, trick edge cases, or java standard library nuances..."
-          className="w-full px-3.5 py-2.5 bg-[#1D2740] border border-[#29344D] rounded-xl text-slate-100 placeholder-slate-500 text-xs focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all resize-none"
+          className="w-full px-3.5 py-2.5 bg-[#1D202D] border border-[#2C3142] rounded-xl text-slate-100 placeholder-slate-500 text-xs focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-transparent transition-all resize-none"
         />
       </div>
 
@@ -171,27 +167,27 @@ function ChallengeResultContent({
           type="checkbox"
           checked={forRevision}
           onChange={(e) => setForRevision(e.target.checked)}
-          className="w-4 h-4 rounded border-[#29344D] bg-[#1D2740] text-purple-600 focus:ring-purple-500 cursor-pointer"
+          className="w-4 h-4 rounded border-[#2C3142] bg-[#1D202D] text-amber-500 focus:ring-amber-500 cursor-pointer"
         />
         <BookmarkCheck className="w-4 h-4 text-amber-400" />
         <span>Flag this problem for spaced repetition revision</span>
       </label>
 
       {/* Actions */}
-      <div className="flex flex-col sm:flex-row items-center justify-end gap-2.5 pt-3 border-t border-[#29344D]">
+      <div className="flex flex-col sm:flex-row items-center justify-end gap-2.5 pt-3 border-t border-[#2C3142]">
         <button
           type="button"
           onClick={handleSaveAndClose}
-          className="w-full sm:w-auto px-4 py-2 text-xs font-medium text-slate-300 hover:text-white bg-[#1D2740] hover:bg-[#24304F] rounded-xl border border-[#29344D] transition-colors"
+          className="w-full sm:w-auto px-4 py-2 text-xs font-medium text-slate-300 hover:text-white bg-[#1D202D] hover:bg-[#25293A] rounded-xl border border-[#2C3142] transition-colors"
         >
           Save & Close
         </button>
         <button
           type="button"
           onClick={handleSaveAndSpin}
-          className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2 text-xs font-semibold text-white bg-purple-600 hover:bg-purple-500 rounded-xl shadow-glow-purple transition-all"
+          className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2 text-xs font-semibold text-slate-950 bg-amber-500 hover:bg-amber-400 rounded-xl shadow-sm transition-colors"
         >
-          <Sparkles className="w-3.5 h-3.5 text-cyan-300" />
+          <Sparkles className="w-3.5 h-3.5 text-slate-950" />
           <span>Save & Pick Another</span>
         </button>
       </div>

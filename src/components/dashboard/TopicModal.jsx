@@ -42,7 +42,7 @@ function TopicFormContent({ initialTopic, onClose, onSave }) {
             if (error) setError('');
           }}
           placeholder="e.g. Dynamic Programming, Trees, Tries"
-          className="w-full px-3.5 py-2 bg-[#1D2740] border border-[#29344D] rounded-xl text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+          className="w-full px-3.5 py-2 bg-[#1D202D] border border-[#2C3142] rounded-xl text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-transparent transition-all"
           autoFocus
         />
       </div>
@@ -56,7 +56,7 @@ function TopicFormContent({ initialTopic, onClose, onSave }) {
           onChange={(e) => setDescription(e.target.value)}
           rows={3}
           placeholder="Key algorithmic patterns, edge cases, formulas or invariants..."
-          className="w-full px-3.5 py-2 bg-[#1D2740] border border-[#29344D] rounded-xl text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all resize-none"
+          className="w-full px-3.5 py-2 bg-[#1D202D] border border-[#2C3142] rounded-xl text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-transparent transition-all resize-none"
         />
       </div>
 
@@ -75,9 +75,9 @@ function TopicFormContent({ initialTopic, onClose, onSave }) {
                   ? s === 'Completed'
                     ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 shadow-sm'
                     : s === 'Revision'
-                    ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 shadow-sm'
-                    : 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40 shadow-sm'
-                  : 'bg-[#1D2740]/60 text-slate-400 border-[#29344D] hover:bg-[#1D2740]'
+                    ? 'bg-rose-500/20 text-rose-300 border-rose-500/40 shadow-sm'
+                    : 'bg-amber-500/20 text-amber-300 border-amber-500/40 shadow-sm'
+                  : 'bg-[#1D202D]/60 text-slate-400 border-[#2C3142] hover:bg-[#1D202D]'
               }`}
             >
               {s}
@@ -86,17 +86,17 @@ function TopicFormContent({ initialTopic, onClose, onSave }) {
         </div>
       </div>
 
-      <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#29344D]">
+      <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#2C3142]">
         <button
           type="button"
           onClick={onClose}
-          className="px-4 py-2 text-xs font-medium text-slate-300 hover:text-white bg-[#1D2740] rounded-lg transition-colors border border-[#29344D]"
+          className="px-4 py-2 text-xs font-medium text-slate-300 hover:text-white bg-[#1D202D] rounded-lg transition-colors border border-[#2C3142]"
         >
           Cancel
         </button>
         <button
           type="submit"
-          className="px-4 py-2 text-xs font-medium text-white bg-purple-600 hover:bg-purple-500 rounded-lg transition-colors shadow-glow-purple"
+          className="px-4 py-2 text-xs font-semibold text-slate-950 bg-amber-500 hover:bg-amber-400 rounded-lg transition-colors shadow-sm"
         >
           {initialTopic ? 'Save Changes' : 'Create Topic'}
         </button>

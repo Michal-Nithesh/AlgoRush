@@ -95,11 +95,9 @@ export default function TopicExplorer() {
   // Filter topics by status and search query
   const filteredTopics = useMemo(() => {
     return topics.filter((t) => {
-      // Status filter
       if (topicStatusFilter !== 'All' && t.status !== topicStatusFilter) {
         return false;
       }
-      // Search query
       if (searchQuery.trim().length > 0) {
         const q = searchQuery.toLowerCase().trim();
         const matchName = t.name.toLowerCase().includes(q);
@@ -123,7 +121,6 @@ export default function TopicExplorer() {
       groups[cat].push(t);
     });
 
-    // Remove empty categories
     return Object.entries(groups).filter(([, list]) => list.length > 0);
   }, [filteredTopics]);
 
@@ -153,35 +150,32 @@ export default function TopicExplorer() {
     }
   };
 
-  // Toggle all topics in a given category
   const toggleCategorySelection = (categoryTopicList) => {
     const categoryIds = categoryTopicList.map((t) => t.id);
     const allSelected = categoryIds.every((id) => selectedTopicIds.includes(id));
     if (allSelected) {
-      // Deselect category
       setSelectedTopicIds((prev) => prev.filter((id) => !categoryIds.includes(id)));
     } else {
-      // Select all in category
       setSelectedTopicIds((prev) => Array.from(new Set([...prev, ...categoryIds])));
     }
   };
 
   const statusStyles = {
     Completed: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
-    Learning: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20',
-    Revision: 'text-amber-400 bg-amber-500/10 border-amber-500/20',
+    Learning: 'text-amber-400 bg-amber-500/10 border-amber-500/20',
+    Revision: 'text-rose-400 bg-rose-500/10 border-rose-500/20',
   };
 
   return (
-    <div className="bg-[#151C30] border border-[#29344D] rounded-2xl p-4 sm:p-5 flex flex-col gap-4 shadow-sm">
+    <div className="bg-[#14161F] border border-[#2C3142] rounded-2xl p-4 sm:p-5 flex flex-col gap-4 shadow-sm">
       {/* Top Header */}
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <Layers className="w-4 h-4 text-purple-400" />
+          <Layers className="w-4 h-4 text-amber-400" />
           <h2 className="text-xs font-bold text-slate-100 uppercase tracking-wider font-mono">
             Topic Explorer
           </h2>
-          <span className="text-[11px] font-mono text-slate-400 bg-[#1D2740] px-2 py-0.5 rounded-md border border-[#29344D]">
+          <span className="text-[11px] font-mono text-slate-400 bg-[#1D202D] px-2 py-0.5 rounded-md border border-[#2C3142]">
             {selectedTopicIds.length}/{topics.length} active
           </span>
         </div>
@@ -191,8 +185,8 @@ export default function TopicExplorer() {
             onClick={() => setViewMode(viewMode === 'categorized' ? 'flat' : 'categorized')}
             className={`p-1.5 rounded-lg border text-xs transition-colors ${
               viewMode === 'categorized'
-                ? 'bg-purple-600/20 text-purple-300 border-purple-500/30'
-                : 'bg-[#1D2740] text-slate-400 border-[#29344D] hover:text-slate-200'
+                ? 'bg-amber-500/15 text-amber-300 border-amber-500/30'
+                : 'bg-[#1D202D] text-slate-400 border-[#2C3142] hover:text-slate-200'
             }`}
             title={viewMode === 'categorized' ? 'Switch to Flat View' : 'Switch to Grouped View'}
             aria-label="Toggle Topic View Mode"
@@ -209,7 +203,7 @@ export default function TopicExplorer() {
               setEditingTopic(null);
               setIsModalOpen(true);
             }}
-            className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-purple-300 bg-purple-600/20 hover:bg-purple-600/30 border border-purple-500/30 rounded-lg transition-all focus:outline-none focus:ring-1 focus:ring-purple-400"
+            className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-amber-300 bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 rounded-lg transition-colors focus:outline-none focus:ring-1 focus:ring-amber-400"
           >
             <Plus className="w-3.5 h-3.5" />
             <span>New</span>
@@ -225,7 +219,7 @@ export default function TopicExplorer() {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search topics (e.g. Arrays, Trees, Recursion)..."
-          className="w-full pl-8 pr-8 py-1.5 bg-[#0B1020]/80 border border-[#29344D] focus:border-purple-500 rounded-xl text-xs text-slate-100 placeholder-slate-500 outline-none transition-colors"
+          className="w-full pl-8 pr-8 py-1.5 bg-[#0C0D12]/90 border border-[#2C3142] focus:border-amber-500 rounded-xl text-xs text-slate-100 placeholder-slate-500 outline-none transition-colors"
         />
         {searchQuery && (
           <button
@@ -239,7 +233,7 @@ export default function TopicExplorer() {
       </div>
 
       {/* Filter Row 1: Status Tabs & Revision Only */}
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#29344D] pb-3 text-xs">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#2C3142] pb-3 text-xs">
         {/* Status Filter */}
         <div className="flex items-center gap-1 overflow-x-auto py-0.5">
           {['All', 'Learning', 'Completed', 'Revision'].map((status) => (
@@ -248,8 +242,8 @@ export default function TopicExplorer() {
               onClick={() => setTopicStatusFilter(status)}
               className={`px-2 py-0.5 rounded-md text-[11px] font-medium transition-colors ${
                 topicStatusFilter === status
-                  ? 'bg-purple-600/30 text-purple-200 border border-purple-500/40'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-[#1D2740]'
+                  ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-[#1D202D]'
               }`}
             >
               {status}
@@ -262,15 +256,15 @@ export default function TopicExplorer() {
           onClick={() => setForRevisionOnly(!forRevisionOnly)}
           className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-medium border transition-colors ${
             forRevisionOnly
-              ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 shadow-sm'
-              : 'bg-[#1D2740]/60 text-slate-400 border-[#29344D] hover:text-slate-200'
+              ? 'bg-rose-500/20 text-rose-300 border-rose-500/40 shadow-sm'
+              : 'bg-[#1D202D]/70 text-slate-400 border-[#2C3142] hover:text-slate-200'
           }`}
           title="Only select problems marked for revision"
         >
-          <BookmarkCheck className={`w-3 h-3 ${forRevisionOnly ? 'text-amber-400' : 'text-slate-400'}`} />
+          <BookmarkCheck className={`w-3 h-3 ${forRevisionOnly ? 'text-rose-400' : 'text-slate-400'}`} />
           <span>Revision Only</span>
           {totalRevisionCount > 0 && (
-            <span className="text-[10px] font-mono bg-[#151C30] px-1.5 py-0.2 rounded text-slate-400">
+            <span className="text-[10px] font-mono bg-[#14161F] px-1.5 py-0.2 rounded text-slate-400">
               {totalRevisionCount}
             </span>
           )}
@@ -294,8 +288,8 @@ export default function TopicExplorer() {
                     ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
                     : diff === 'hard'
                     ? 'bg-rose-500/20 text-rose-300 border-rose-500/40'
-                    : 'bg-purple-600/30 text-purple-200 border-purple-500/40'
-                  : 'bg-[#1D2740]/40 text-slate-400 border-[#29344D] hover:text-slate-200'
+                    : 'bg-amber-500/20 text-amber-300 border-amber-500/40'
+                  : 'bg-[#1D202D]/40 text-slate-400 border-[#2C3142] hover:text-slate-200'
               }`}
             >
               {diff}
@@ -307,7 +301,7 @@ export default function TopicExplorer() {
         <div className="flex items-center gap-1.5 text-xs text-slate-400 flex-shrink-0">
           <button
             onClick={selectAllTopics}
-            className="hover:text-purple-300 transition-colors text-[11px] font-mono p-1"
+            className="hover:text-amber-300 transition-colors text-[11px] font-mono p-1"
             title="Select all topics"
           >
             All
@@ -315,7 +309,7 @@ export default function TopicExplorer() {
           <span>|</span>
           <button
             onClick={clearTopicSelection}
-            className="hover:text-purple-300 transition-colors text-[11px] font-mono p-1"
+            className="hover:text-amber-300 transition-colors text-[11px] font-mono p-1"
             title="Clear topic selection"
           >
             Clear
@@ -324,9 +318,9 @@ export default function TopicExplorer() {
       </div>
 
       {/* Live Eligible Problem Status Bar */}
-      <div className="flex items-center justify-between px-3 py-1.5 bg-[#0B1020]/70 rounded-xl border border-[#29344D] text-xs">
+      <div className="flex items-center justify-between px-3 py-1.5 bg-[#0C0D12]/80 rounded-xl border border-[#2C3142] text-xs">
         <span className="text-slate-400 text-[11px]">Eligible in arena:</span>
-        <span className="font-mono font-semibold text-cyan-400 flex items-center gap-1">
+        <span className="font-mono font-semibold text-amber-400 flex items-center gap-1">
           <span>{eligibleProblemCount}</span>
           <span className="text-[11px] font-normal text-slate-400">
             {eligibleProblemCount === 1 ? 'problem' : 'problems'}
@@ -349,17 +343,17 @@ export default function TopicExplorer() {
             return (
               <div key={categoryName} className="space-y-1">
                 {/* Category Header */}
-                <div className="flex items-center justify-between px-1 py-1 text-[11px] font-mono uppercase text-slate-400 border-b border-[#29344D]/50">
+                <div className="flex items-center justify-between px-1 py-1 text-[11px] font-mono uppercase text-slate-400 border-b border-[#2C3142]/60">
                   <button
                     onClick={() => toggleCategorySelection(topicList)}
-                    className="flex items-center gap-1.5 hover:text-purple-300 transition-colors group"
+                    className="flex items-center gap-1.5 hover:text-amber-300 transition-colors group"
                     title={`Toggle all in ${categoryName}`}
                   >
-                    <span className="w-3 h-3 rounded flex items-center justify-center border border-[#29344D] bg-[#1D2740] group-hover:border-purple-400">
+                    <span className="w-3 h-3 rounded flex items-center justify-center border border-[#2C3142] bg-[#1D202D] group-hover:border-amber-400">
                       {allSelected ? (
-                        <Check className="w-2.5 h-2.5 text-purple-400" />
+                        <Check className="w-2.5 h-2.5 text-amber-400" />
                       ) : someSelected ? (
-                        <span className="w-1.5 h-1.5 bg-purple-400 rounded-sm" />
+                        <span className="w-1.5 h-1.5 bg-amber-400 rounded-sm" />
                       ) : null}
                     </span>
                     <span className="font-bold tracking-wider">{categoryName}</span>
@@ -382,14 +376,14 @@ export default function TopicExplorer() {
                         onClick={() => toggleTopicSelection(topic.id)}
                         className={`group flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-medium cursor-pointer border transition-colors ${
                           isSelected
-                            ? 'bg-purple-950/20 border-purple-500/40 text-slate-100'
-                            : 'bg-[#1D2740]/30 border-[#29344D] text-slate-400 hover:bg-[#1D2740]/70 hover:text-slate-200'
+                            ? 'bg-amber-500/10 border-amber-500/30 text-slate-100'
+                            : 'bg-[#1D202D]/40 border-[#2C3142] text-slate-400 hover:bg-[#1D202D]/80 hover:text-slate-200'
                         }`}
                       >
                         <div className="flex items-center gap-2 flex-1 min-w-0">
-                          <span className="text-purple-400 flex-shrink-0">
+                          <span className="text-amber-400 flex-shrink-0">
                             {isSelected ? (
-                              <CheckSquare className="w-3.5 h-3.5 fill-purple-500/20" />
+                              <CheckSquare className="w-3.5 h-3.5 fill-amber-500/20" />
                             ) : (
                               <Square className="w-3.5 h-3.5 opacity-40 group-hover:opacity-100" />
                             )}
@@ -408,8 +402,8 @@ export default function TopicExplorer() {
                           <span
                             className={`text-[11px] px-1.5 py-0.2 rounded font-mono ${
                               isSelected
-                                ? 'bg-purple-500/20 text-purple-200'
-                                : 'bg-[#151C30] text-slate-500'
+                                ? 'bg-amber-500/20 text-amber-200'
+                                : 'bg-[#14161F] text-slate-500'
                             }`}
                             title={`${count} problems in ${topic.name}`}
                           >
@@ -419,7 +413,7 @@ export default function TopicExplorer() {
                           <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 ml-0.5">
                             <button
                               onClick={(e) => handleEdit(e, topic)}
-                              className="p-1 text-slate-400 hover:text-slate-200 rounded hover:bg-[#151C30]"
+                              className="p-1 text-slate-400 hover:text-slate-200 rounded hover:bg-[#14161F]"
                               title="Edit Topic"
                               aria-label={`Edit ${topic.name}`}
                             >
@@ -427,7 +421,7 @@ export default function TopicExplorer() {
                             </button>
                             <button
                               onClick={(e) => handleDelete(e, topic.id)}
-                              className="p-1 text-rose-400 hover:text-rose-300 rounded hover:bg-[#151C30]"
+                              className="p-1 text-rose-400 hover:text-rose-300 rounded hover:bg-[#14161F]"
                               title="Delete Topic"
                               aria-label={`Delete ${topic.name}`}
                             >
@@ -454,14 +448,14 @@ export default function TopicExplorer() {
                 onClick={() => toggleTopicSelection(topic.id)}
                 className={`group flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium cursor-pointer border transition-colors ${
                   isSelected
-                    ? 'bg-purple-950/20 border-purple-500/40 text-slate-100'
-                    : 'bg-[#1D2740]/30 border-[#29344D] text-slate-400 hover:bg-[#1D2740]/70 hover:text-slate-200'
+                    ? 'bg-amber-500/10 border-amber-500/30 text-slate-100'
+                    : 'bg-[#1D202D]/40 border-[#2C3142] text-slate-400 hover:bg-[#1D202D]/80 hover:text-slate-200'
                 }`}
               >
                 <div className="flex items-center gap-2.5 flex-1 min-w-0">
-                  <span className="text-purple-400 flex-shrink-0">
+                  <span className="text-amber-400 flex-shrink-0">
                     {isSelected ? (
-                      <CheckSquare className="w-4 h-4 fill-purple-500/20" />
+                      <CheckSquare className="w-4 h-4 fill-amber-500/20" />
                     ) : (
                       <Square className="w-4 h-4 opacity-40 group-hover:opacity-100" />
                     )}
@@ -480,8 +474,8 @@ export default function TopicExplorer() {
                   <span
                     className={`text-[11px] px-2 py-0.5 rounded font-mono ${
                       isSelected
-                        ? 'bg-purple-500/20 text-purple-200'
-                        : 'bg-[#151C30] text-slate-500'
+                        ? 'bg-amber-500/20 text-amber-200'
+                        : 'bg-[#14161F] text-slate-500'
                     }`}
                     title={`${count} problems in ${topic.name}`}
                   >
@@ -491,7 +485,7 @@ export default function TopicExplorer() {
                   <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 ml-1">
                     <button
                       onClick={(e) => handleEdit(e, topic)}
-                      className="p-1 text-slate-400 hover:text-slate-200 rounded hover:bg-[#151C30]"
+                      className="p-1 text-slate-400 hover:text-slate-200 rounded hover:bg-[#14161F]"
                       title="Edit Topic"
                       aria-label={`Edit ${topic.name}`}
                     >
@@ -499,7 +493,7 @@ export default function TopicExplorer() {
                     </button>
                     <button
                       onClick={(e) => handleDelete(e, topic.id)}
-                      className="p-1 text-rose-400 hover:text-rose-300 rounded hover:bg-[#151C30]"
+                      className="p-1 text-rose-400 hover:text-rose-300 rounded hover:bg-[#14161F]"
                       title="Delete Topic"
                       aria-label={`Delete ${topic.name}`}
                     >

@@ -40,7 +40,6 @@ export default function ProblemLibrary() {
   // Filtered problems list
   const filteredProblems = useMemo(() => {
     return problems.filter((p) => {
-      // Search query
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase().trim();
         const matchTitle = p.title.toLowerCase().includes(q);
@@ -49,19 +48,16 @@ export default function ProblemLibrary() {
         if (!matchTitle && !matchDesc && !matchNotes) return false;
       }
 
-      // Topic filter
       if (selectedTopicFilter !== 'all') {
         if (!p.topicIds?.includes(selectedTopicFilter)) return false;
       }
 
-      // Difficulty filter
       if (selectedDifficultyFilter !== 'all') {
         if (p.difficulty.toLowerCase() !== selectedDifficultyFilter.toLowerCase()) {
           return false;
         }
       }
 
-      // Revision filter
       if (revisionOnlyFilter && !p.forRevision) {
         return false;
       }
@@ -99,7 +95,6 @@ export default function ProblemLibrary() {
     setActiveTab('dashboard');
   };
 
-  // Helper to get topic names
   const getTopicNames = (topicIds = []) => {
     return topicIds.map((id) => {
       const found = topics.find((t) => t.id === id);
@@ -113,11 +108,11 @@ export default function ProblemLibrary() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <BookOpen className="w-5 h-5 text-purple-400" />
+            <BookOpen className="w-5 h-5 text-amber-400" />
             <h1 className="text-xl font-bold text-white tracking-tight">
               Problem Library
             </h1>
-            <span className="text-xs text-slate-400 font-mono bg-[#1D2740] px-2 py-0.5 rounded-full border border-[#29344D]">
+            <span className="text-xs text-slate-400 font-mono bg-[#1D202D] px-2 py-0.5 rounded-full border border-[#2C3142]">
               {problems.length} total
             </span>
           </div>
@@ -131,7 +126,7 @@ export default function ProblemLibrary() {
             setEditingProblem(null);
             setIsFormOpen(true);
           }}
-          className="flex items-center justify-center gap-2 px-4 py-2.5 bg-purple-600 hover:bg-purple-500 text-white font-semibold text-xs rounded-xl shadow-glow-purple transition-all"
+          className="flex items-center justify-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold text-xs rounded-xl shadow-sm transition-colors"
         >
           <Plus className="w-4 h-4" />
           <span>Add New Problem</span>
@@ -139,7 +134,7 @@ export default function ProblemLibrary() {
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="bg-[#151C30] border border-[#29344D] rounded-2xl p-4 shadow-lg flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+      <div className="bg-[#14161F] border border-[#2C3142] rounded-2xl p-4 shadow-sm flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
         {/* Search Input */}
         <div className="relative flex-1">
           <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -148,7 +143,7 @@ export default function ProblemLibrary() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search problems by title, keywords, or notes..."
-            className="w-full pl-9 pr-4 py-2 bg-[#1D2740] border border-[#29344D] rounded-xl text-slate-100 placeholder-slate-500 text-xs focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className="w-full pl-9 pr-4 py-2 bg-[#1D202D] border border-[#2C3142] rounded-xl text-slate-100 placeholder-slate-500 text-xs focus:outline-none focus:ring-1 focus:ring-amber-500"
           />
         </div>
 
@@ -158,7 +153,7 @@ export default function ProblemLibrary() {
           <select
             value={selectedTopicFilter}
             onChange={(e) => setSelectedTopicFilter(e.target.value)}
-            className="px-3 py-2 bg-[#1D2740] border border-[#29344D] rounded-xl text-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-purple-500 cursor-pointer"
+            className="px-3 py-2 bg-[#1D202D] border border-[#2C3142] rounded-xl text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-amber-500 cursor-pointer"
           >
             <option value="all">All Topics</option>
             {topics.map((t) => (
@@ -172,7 +167,7 @@ export default function ProblemLibrary() {
           <select
             value={selectedDifficultyFilter}
             onChange={(e) => setSelectedDifficultyFilter(e.target.value)}
-            className="px-3 py-2 bg-[#1D2740] border border-[#29344D] rounded-xl text-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-purple-500 cursor-pointer"
+            className="px-3 py-2 bg-[#1D202D] border border-[#2C3142] rounded-xl text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-amber-500 cursor-pointer"
           >
             <option value="all">All Difficulties</option>
             <option value="Easy">Easy</option>
@@ -183,10 +178,10 @@ export default function ProblemLibrary() {
           {/* Revision filter button */}
           <button
             onClick={() => setRevisionOnlyFilter((prev) => !prev)}
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium border transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium border transition-colors ${
               revisionOnlyFilter
-                ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 shadow-sm'
-                : 'bg-[#1D2740] text-slate-400 border-[#29344D] hover:text-slate-200'
+                ? 'bg-rose-500/20 text-rose-300 border-rose-500/40 shadow-sm'
+                : 'bg-[#1D202D] text-slate-400 border-[#2C3142] hover:text-slate-200'
             }`}
           >
             <BookmarkCheck className="w-3.5 h-3.5" />
@@ -197,7 +192,7 @@ export default function ProblemLibrary() {
 
       {/* Problems List */}
       {filteredProblems.length === 0 ? (
-        <div className="bg-[#151C30] border border-[#29344D] rounded-2xl p-12 text-center shadow-lg">
+        <div className="bg-[#14161F] border border-[#2C3142] rounded-2xl p-12 text-center shadow-sm">
           <BookOpen className="w-10 h-10 text-slate-500 mx-auto mb-3" />
           <h3 className="text-sm font-semibold text-slate-200 mb-1">
             No problems match your criteria
@@ -212,7 +207,7 @@ export default function ProblemLibrary() {
               setSelectedDifficultyFilter('all');
               setRevisionOnlyFilter(false);
             }}
-            className="px-4 py-2 bg-[#1D2740] hover:bg-[#24304F] text-slate-200 text-xs rounded-xl border border-[#29344D] transition-colors"
+            className="px-4 py-2 bg-[#1D202D] hover:bg-[#25293A] text-slate-200 text-xs rounded-xl border border-[#2C3142] transition-colors"
           >
             Reset Filters
           </button>
@@ -225,7 +220,7 @@ export default function ProblemLibrary() {
             return (
               <div
                 key={problem.id}
-                className="bg-[#151C30] border border-[#29344D] hover:border-purple-500/30 rounded-2xl p-5 shadow-lg flex flex-col justify-between gap-4 transition-all hover:shadow-glow-purple/20 group"
+                className="bg-[#14161F] border border-[#2C3142] hover:border-amber-500/40 rounded-2xl p-5 shadow-sm flex flex-col justify-between gap-4 transition-colors group"
               >
                 <div className="space-y-3">
                   {/* Top Bar: Difficulty, Estimated time & Revision toggle */}
@@ -233,7 +228,7 @@ export default function ProblemLibrary() {
                     <DifficultyBadge difficulty={problem.difficulty} size="sm" />
                     <div className="flex items-center gap-2">
                       <span className="flex items-center gap-1 text-[11px] text-slate-400 font-mono">
-                        <Clock className="w-3 h-3 text-cyan-400" />
+                        <Clock className="w-3 h-3 text-amber-400" />
                         {problem.estimatedTime || 20}m
                       </span>
 
@@ -241,7 +236,7 @@ export default function ProblemLibrary() {
                         onClick={() => toggleRevision(problem.id)}
                         className={`p-1 rounded-md transition-colors ${
                           problem.forRevision
-                            ? 'text-amber-400 hover:text-amber-300'
+                            ? 'text-rose-400 hover:text-rose-300'
                             : 'text-slate-500 hover:text-slate-300'
                         }`}
                         title={
@@ -251,7 +246,7 @@ export default function ProblemLibrary() {
                         }
                       >
                         {problem.forRevision ? (
-                          <BookmarkCheck className="w-4 h-4 fill-amber-400/20" />
+                          <BookmarkCheck className="w-4 h-4 fill-rose-400/20" />
                         ) : (
                           <Bookmark className="w-4 h-4" />
                         )}
@@ -261,7 +256,7 @@ export default function ProblemLibrary() {
 
                   {/* Problem Title & URL link */}
                   <div>
-                    <h3 className="text-base font-bold text-white group-hover:text-purple-300 transition-colors line-clamp-1">
+                    <h3 className="text-base font-bold text-white group-hover:text-amber-300 transition-colors line-clamp-1">
                       {problem.title}
                     </h3>
 
@@ -270,7 +265,7 @@ export default function ProblemLibrary() {
                       {topicNames.map((tName) => (
                         <span
                           key={tName}
-                          className="text-[10px] text-purple-300 bg-purple-950/40 border border-purple-800/40 px-2 py-0.5 rounded-md"
+                          className="text-[10px] text-amber-300 bg-amber-500/10 border border-amber-500/25 px-2 py-0.5 rounded-md font-mono"
                         >
                           {tName}
                         </span>
@@ -287,13 +282,13 @@ export default function ProblemLibrary() {
                 </div>
 
                 {/* Bottom Actions: Attempt Now, External Link, Edit, Delete */}
-                <div className="pt-3 border-t border-[#29344D] flex items-center justify-between gap-2">
+                <div className="pt-3 border-t border-[#2C3142] flex items-center justify-between gap-2">
                   <button
                     onClick={() => handleAttemptNow(problem)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/30 rounded-xl text-xs font-semibold transition-all"
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/30 rounded-xl text-xs font-semibold transition-colors"
                     title="Load into Arena countdown"
                   >
-                    <Play className="w-3 h-3 fill-purple-300" />
+                    <Play className="w-3 h-3 fill-amber-300" />
                     <span>Attempt</span>
                   </button>
 
@@ -303,7 +298,7 @@ export default function ProblemLibrary() {
                         href={problem.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="p-1.5 text-slate-400 hover:text-cyan-400 rounded-lg hover:bg-[#1D2740] transition-colors"
+                        className="p-1.5 text-slate-400 hover:text-sky-400 rounded-lg hover:bg-[#1D202D] transition-colors"
                         title="Open external problem link"
                       >
                         <ExternalLink className="w-3.5 h-3.5" />
@@ -311,14 +306,14 @@ export default function ProblemLibrary() {
                     )}
                     <button
                       onClick={() => handleEdit(problem)}
-                      className="p-1.5 text-slate-400 hover:text-slate-200 rounded-lg hover:bg-[#1D2740] transition-colors"
+                      className="p-1.5 text-slate-400 hover:text-slate-200 rounded-lg hover:bg-[#1D202D] transition-colors"
                       title="Edit Problem"
                     >
                       <Edit2 className="w-3.5 h-3.5" />
                     </button>
                     <button
                       onClick={() => handleDelete(problem.id)}
-                      className="p-1.5 text-slate-400 hover:text-rose-400 rounded-lg hover:bg-[#1D2740] transition-colors"
+                      className="p-1.5 text-slate-400 hover:text-rose-400 rounded-lg hover:bg-[#1D202D] transition-colors"
                       title="Delete Problem"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
