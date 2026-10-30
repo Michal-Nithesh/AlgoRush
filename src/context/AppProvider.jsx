@@ -22,6 +22,7 @@ export function AppProvider({ children }) {
   });
   const [difficultyFilter, setDifficultyFilter] = useState('all');
   const [topicStatusFilter, setTopicStatusFilter] = useState('All');
+  const [forRevisionOnly, setForRevisionOnly] = useState(false);
 
   // Active chosen problem for the challenge card / timer
   const [selectedProblem, setSelectedProblem] = useState(() => {
@@ -327,6 +328,8 @@ export function AppProvider({ children }) {
       setDifficultyFilter,
       topicStatusFilter,
       setTopicStatusFilter,
+      forRevisionOnly,
+      setForRevisionOnly,
       selectedProblem,
       setSelectedProblem,
       sessionSolvedIds,
@@ -356,6 +359,7 @@ export function AppProvider({ children }) {
       clearTopicSelection,
       difficultyFilter,
       topicStatusFilter,
+      forRevisionOnly,
       selectedProblem,
       sessionSolvedIds,
       toast,

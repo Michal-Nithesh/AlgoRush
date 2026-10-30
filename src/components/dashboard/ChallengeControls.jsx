@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   CheckCircle2,
   XCircle,
-  SkipForward,
   Flag,
   ExternalLink,
+  Play,
+  Pause,
+  RotateCcw,
 } from 'lucide-react';
 import ConfirmDialog from '../common/ConfirmDialog';
 
@@ -13,12 +15,98 @@ export default function ChallengeControls({
   timer,
   onFinishChallenge, // (status: 'solved' | 'failed' | 'skipped' | 'abandoned')
 }) {
-  const { status, resetTimer } = timer;
+  const {
+    status,
+    resetTimer,
+    startTimer,
+    pauseTimer,
+    resumeTimer,
+  } = timer;
+
   const [isAbandonConfirmOpen, setIsAbandonConfirmOpen] = useState(false);
 
-  if (!problem) return null;
+  const isChallengeActive =
+    status === 'running' || status === 'paused' || status === 'times_up';
 
-  const isChallengeActive = status === 'running' || status === 'paused' || status === 'times_up';
+  // Keyboard shortcut listener
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Ignore if typing inside text input, textarea, select, or contenteditable
+      const target = e.target;
+      if (
+        target &&
+        (target.tagName === 'INPUT' ||
+          target.tagName === 'TEXTAREA' ||
+          target.tagName === 'SELECT' ||
+          target.isContentEditable)
+      ) {
+        return;
+      }
+
+      // Ignore if any modal or confirm dialog is currently open
+      if (document.querySelector('[role="dialog"]') || isAbandonConfirmOpen) {
+        return;
+      }
+
+      // Avoid repeated triggers while key is held down
+      if (e.repeat) return;
+
+      // Space: Start, Pause, or Resume countdown
+      if (e.code === 'Space') {
+        e.preventDefault(); // Stop page scrolling
+        if (status === 'idle') {
+          startTimer();
+        } else if (status === 'running') {
+          pauseTimer();
+        } else if (status === 'paused') {
+          resumeTimer();
+        }
+        return;
+      }
+
+      // S key: Mark Solved
+      if ((e.key === 's' || e.key === 'S') && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        if (isChallengeActive) {
+          e.preventDefault();
+          onFinishChallenge('solved');
+        }
+        return;
+      }
+
+      // F key: Mark Failed
+      if ((e.key === 'f' || e.key === 'F') && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        if (isChallengeActive) {
+          e.preventDefault();
+          onFinishChallenge('failed');
+        }
+        return;
+      }
+
+      // R key: Reset Timer / Abandon
+      if ((e.key === 'r' || e.key === 'R') && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        e.preventDefault();
+        if (isChallengeActive) {
+          setIsAbandonConfirmOpen(true);
+        } else if (status === 'idle') {
+          resetTimer();
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [
+    status,
+    isChallengeActive,
+    startTimer,
+    pauseTimer,
+    resumeTimer,
+    resetTimer,
+    onFinishChallenge,
+    isAbandonConfirmOpen,
+  ]);
+
+  if (!problem) return null;
 
   const handleAbandonConfirm = () => {
     resetTimer();
@@ -26,12 +114,21 @@ export default function ChallengeControls({
   };
 
   return (
-    <div className="bg-[#151C30] border border-[#29344D] rounded-2xl p-5 shadow-lg flex flex-col gap-3">
+    <div className="bg-[#151C30] border border-[#29344D] rounded-2xl p-5 shadow-sm flex flex-col gap-3">
       <div className="text-xs font-bold text-slate-300 uppercase tracking-wider font-mono flex items-center justify-between">
-        <span>Challenge Controls</span>
-        {isChallengeActive && (
-          <span className="text-[11px] font-mono text-cyan-400 font-normal">
-            Session in progress
+        <div className="flex items-center gap-2">
+          <span>Challenge Controls</span>
+          <span className="hidden sm:inline-flex items-center text-[10px] text-slate-400 font-mono bg-[#1D2740] px-1.5 py-0.5 rounded border border-[#29344D]">
+            Hotkeys Active
+          </span>
+        </div>
+        {isChallengeActive ? (
+          <span className="text-[11px] font-mono text-cyan-400 font-medium">
+            ● Timer in progress
+          </span>
+        ) : (
+          <span className="text-[11px] font-mono text-slate-400">
+            Press [Space] to start
           </span>
         )}
       </div>
@@ -40,48 +137,93 @@ export default function ChallengeControls({
         {/* Mark as Solved */}
         <button
           onClick={() => onFinishChallenge('solved')}
-          className="flex items-center justify-center gap-2 py-2.5 px-3 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/40 rounded-xl text-xs font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] shadow-sm"
-          title="Mark this problem as Solved"
+          className="flex flex-col items-center justify-center gap-1 py-2.5 px-3 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/40 rounded-xl text-xs font-semibold transition-all hover:scale-[1.01] active:scale-[0.99] shadow-sm group"
+          title="Mark this problem as Solved (Hotkey: S)"
         >
-          <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-          <span>Mark Solved</span>
+          <div className="flex items-center gap-1.5">
+            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+            <span>Mark Solved</span>
+          </div>
+          <span className="text-[10px] font-mono text-emerald-400/80 group-hover:text-emerald-300">
+            [S]
+          </span>
         </button>
 
         {/* Mark as Failed */}
         <button
           onClick={() => onFinishChallenge('failed')}
-          className="flex items-center justify-center gap-2 py-2.5 px-3 bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/40 rounded-xl text-xs font-semibold transition-all hover:scale-[1.02] active:scale-[0.98]"
-          title="Mark this challenge as Failed"
+          className="flex flex-col items-center justify-center gap-1 py-2.5 px-3 bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/40 rounded-xl text-xs font-semibold transition-all hover:scale-[1.01] active:scale-[0.99] group"
+          title="Mark this challenge as Failed (Hotkey: F)"
         >
-          <XCircle className="w-4 h-4 text-rose-400" />
-          <span>Mark Failed</span>
+          <div className="flex items-center gap-1.5">
+            <XCircle className="w-4 h-4 text-rose-400" />
+            <span>Mark Failed</span>
+          </div>
+          <span className="text-[10px] font-mono text-rose-400/80 group-hover:text-rose-300">
+            [F]
+          </span>
         </button>
 
-        {/* Skip Problem */}
+        {/* Space Play/Pause/Resume shortcut action */}
         <button
-          onClick={() => onFinishChallenge('skipped')}
-          className="flex items-center justify-center gap-2 py-2.5 px-3 bg-[#1D2740] hover:bg-[#24304F] text-slate-300 border border-[#29344D] rounded-xl text-xs font-medium transition-all"
-          title="Skip to another problem"
+          onClick={() => {
+            if (status === 'idle') startTimer();
+            else if (status === 'running') pauseTimer();
+            else if (status === 'paused') resumeTimer();
+          }}
+          className="flex flex-col items-center justify-center gap-1 py-2.5 px-3 bg-[#1D2740] hover:bg-[#24304F] text-slate-200 border border-[#29344D] rounded-xl text-xs font-medium transition-all group"
+          title={
+            status === 'running'
+              ? 'Pause Countdown (Hotkey: Space)'
+              : 'Start / Resume Countdown (Hotkey: Space)'
+          }
         >
-          <SkipForward className="w-4 h-4 text-slate-400" />
-          <span>Skip</span>
+          <div className="flex items-center gap-1.5">
+            {status === 'running' ? (
+              <>
+                <Pause className="w-4 h-4 text-amber-400" />
+                <span>Pause</span>
+              </>
+            ) : (
+              <>
+                <Play className="w-4 h-4 text-cyan-400 fill-cyan-400/20" />
+                <span>{status === 'paused' ? 'Resume' : 'Start'}</span>
+              </>
+            )}
+          </div>
+          <span className="text-[10px] font-mono text-slate-400 group-hover:text-slate-300">
+            [Space]
+          </span>
         </button>
 
-        {/* Abandon Challenge */}
+        {/* Abandon / Reset Challenge */}
         <button
           onClick={() => {
             if (isChallengeActive) {
               setIsAbandonConfirmOpen(true);
             } else {
-              onFinishChallenge('abandoned');
+              resetTimer();
             }
           }}
-          disabled={!isChallengeActive}
-          className="flex items-center justify-center gap-2 py-2.5 px-3 bg-[#1D2740]/60 hover:bg-rose-900/20 text-slate-400 hover:text-rose-300 border border-[#29344D] hover:border-rose-500/30 rounded-xl text-xs font-medium transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-          title="Abandon active challenge"
+          className="flex flex-col items-center justify-center gap-1 py-2.5 px-3 bg-[#1D2740]/60 hover:bg-rose-900/20 text-slate-400 hover:text-rose-300 border border-[#29344D] hover:border-rose-500/30 rounded-xl text-xs font-medium transition-all group"
+          title="Reset timer or abandon current attempt (Hotkey: R)"
         >
-          <Flag className="w-4 h-4 text-slate-400" />
-          <span>Abandon</span>
+          <div className="flex items-center gap-1.5">
+            {isChallengeActive ? (
+              <>
+                <Flag className="w-4 h-4 text-slate-400 group-hover:text-rose-400" />
+                <span>Abandon</span>
+              </>
+            ) : (
+              <>
+                <RotateCcw className="w-4 h-4 text-slate-400 group-hover:text-slate-200" />
+                <span>Reset</span>
+              </>
+            )}
+          </div>
+          <span className="text-[10px] font-mono text-slate-400 group-hover:text-rose-300">
+            [R]
+          </span>
         </button>
       </div>
 
@@ -91,7 +233,7 @@ export default function ChallengeControls({
           href={problem.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center justify-center gap-2 py-2 px-3 text-xs text-cyan-400 hover:text-cyan-300 bg-cyan-950/20 hover:bg-cyan-950/40 border border-cyan-800/30 rounded-xl transition-colors mt-1"
+          className="flex items-center justify-center gap-2 py-2 px-3 text-xs text-cyan-400 hover:text-cyan-300 bg-cyan-950/20 hover:bg-cyan-950/40 border border-cyan-800/30 rounded-xl transition-colors mt-1 font-mono"
         >
           <span>Open on LeetCode / Coding Platform</span>
           <ExternalLink className="w-3.5 h-3.5" />

@@ -192,7 +192,7 @@ function ChallengeResultContent({
           className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2 text-xs font-semibold text-white bg-purple-600 hover:bg-purple-500 rounded-xl shadow-glow-purple transition-all"
         >
           <Sparkles className="w-3.5 h-3.5 text-cyan-300" />
-          <span>Save & Spin Another</span>
+          <span>Save & Pick Another</span>
         </button>
       </div>
     </div>

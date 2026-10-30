@@ -130,3 +130,88 @@ export function calculateTargetWheelRotation(
   const totalDelta = (minSpins * 360) + deltaToTarget + jitter;
   return currentRotation + totalDelta;
 }
+
+/**
+ * Create a randomized queue of problems for a practice session without duplicates.
+ *
+ * @param {Array} allProblems - Full or partial problems array
+ * @param {Object} options - Configuration options
+ * @param {number} options.count - Target number of problems
+ * @param {string} options.difficulty - Difficulty filter ('all', 'easy', 'medium', 'hard')
+ * @param {Array} options.selectedTopicIds - Array of active topic IDs
+ * @param {boolean} options.forRevisionOnly - Only include problems marked for revision
+ * @param {Array} options.sessionSolvedIds - Problems already solved in session (deprioritized)
+ * @returns {Object} { queue: Array, totalEstimatedMinutes: number }
+ */
+export function createPracticeQueue(allProblems = [], {
+  count = 3,
+  difficulty = 'all',
+  selectedTopicIds = [],
+  forRevisionOnly = false,
+  sessionSolvedIds = [],
+} = {}) {
+  const filtered = filterProblems(allProblems, {
+    selectedTopicIds,
+    difficulty,
+    forRevisionOnly,
+  });
+
+  if (!filtered || filtered.length === 0) {
+    return { queue: [], totalEstimatedMinutes: 0 };
+  }
+
+  // Shuffle array helper
+  const shuffle = (arr) => {
+    const copy = [...arr];
+    for (let i = copy.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [copy[i], copy[j]] = [copy[j], copy[i]];
+    }
+    return copy;
+  };
+
+  // Deprioritize session solved problems, but include them if needed to fill the count
+  const unsolved = filtered.filter((p) => !sessionSolvedIds.includes(p.id));
+  const solved = filtered.filter((p) => sessionSolvedIds.includes(p.id));
+
+  const candidatePool = [...shuffle(unsolved), ...shuffle(solved)];
+  const targetCount = Math.max(1, Math.min(count, candidatePool.length));
+  const queue = candidatePool.slice(0, targetCount);
+  const totalEstimatedMinutes = queue.reduce((sum, p) => sum + (p.estimatedTime || 20), 0);
+
+  return {
+    queue,
+    totalEstimatedMinutes,
+  };
+}
+
+/**
+ * Format problem statement and metadata as clean plain text for clipboard export.
+ * Excludes internal notes, code solutions, or answer spoilers.
+ *
+ * @param {Object} problem - The problem object
+ * @param {Array} topics - Array of topic objects for resolving topic IDs to names
+ * @returns {string} Plain text formatted statement
+ */
+export function formatProblemForClipboard(problem, topics = []) {
+  if (!problem) return '';
+
+  const topicNames = (problem.topicIds || []).map((id) => {
+    const match = topics.find((t) => t.id === id);
+    return match ? match.name : id;
+  });
+
+  const lines = [
+    `# ${problem.title}`,
+    `Difficulty: ${problem.difficulty}`,
+    `Estimated Time: ${problem.estimatedTime || 20} min`,
+    topicNames.length > 0 ? `Topics: ${topicNames.join(', ')}` : null,
+    problem.url ? `Problem Link: ${problem.url}` : null,
+    '',
+    '--- Problem Statement ---',
+    problem.description || '(No description provided)',
+  ].filter((line) => line !== null);
+
+  return lines.join('\n');
+}
+

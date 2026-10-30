@@ -4,6 +4,8 @@ import {
   selectRandomProblem,
   selectRandomTopic,
   calculateTargetWheelRotation,
+  createPracticeQueue,
+  formatProblemForClipboard,
 } from '../utils/selection';
 
 const mockProblems = [
@@ -161,3 +163,84 @@ describe('Wheel Target Rotation Angle Calculation', () => {
     }
   });
 });
+
+describe('Practice Session Queue Generation', () => {
+  it('generates a queue of requested length without duplicate problems', () => {
+    const { queue, totalEstimatedMinutes } = createPracticeQueue(mockProblems, {
+      count: 3,
+    });
+    expect(queue).toHaveLength(3);
+    const uniqueIds = new Set(queue.map((p) => p.id));
+    expect(uniqueIds.size).toBe(3);
+    expect(totalEstimatedMinutes).toBeGreaterThan(0);
+  });
+
+  it('clamps queue length to pool size if count exceeds available problems', () => {
+    const { queue } = createPracticeQueue(mockProblems, {
+      count: 10,
+    });
+    expect(queue).toHaveLength(4); // Only 4 total mockProblems exist
+  });
+
+  it('respects topic and difficulty filters in queue generation', () => {
+    const { queue } = createPracticeQueue(mockProblems, {
+      count: 2,
+      selectedTopicIds: ['binary-search'],
+      difficulty: 'Easy',
+    });
+    expect(queue).toHaveLength(1);
+    expect(queue[0].id).toBe('p-4');
+  });
+
+  it('respects revision-only filter in queue generation', () => {
+    const { queue } = createPracticeQueue(mockProblems, {
+      count: 5,
+      forRevisionOnly: true,
+    });
+    expect(queue).toHaveLength(2); // p-2 and p-3
+    expect(queue.every((p) => p.forRevision)).toBe(true);
+  });
+
+  it('deprioritizes session-solved problems in practice queue', () => {
+    const sessionSolved = ['p-1', 'p-2', 'p-3'];
+    const { queue } = createPracticeQueue(mockProblems, {
+      count: 1,
+      sessionSolvedIds: sessionSolved,
+    });
+    expect(queue[0].id).toBe('p-4'); // p-4 is the only unsolved one
+  });
+
+  it('handles empty candidate pool by returning empty queue', () => {
+    const { queue, totalEstimatedMinutes } = createPracticeQueue([], {
+      count: 3,
+    });
+    expect(queue).toEqual([]);
+    expect(totalEstimatedMinutes).toBe(0);
+  });
+});
+
+describe('Clipboard Plain-Text Problem Formatting', () => {
+  const mockTopics = [
+    { id: 'arrays', name: 'Arrays' },
+    { id: 'hashing', name: 'Hashing' },
+  ];
+
+  it('formats problem statement, difficulty, time, and ASCII description', () => {
+    const formatted = formatProblemForClipboard(mockProblems[0], mockTopics);
+    expect(formatted).toContain('# Two Sum');
+    expect(formatted).toContain('Difficulty: Easy');
+    expect(formatted).toContain('Topics: Arrays, Hashing');
+    expect(formatted).toContain('Find two indices summing to target');
+  });
+
+  it('strictly omits internal notes and answer spoilers from clipboard text', () => {
+    const formatted = formatProblemForClipboard(mockProblems[0], mockTopics);
+    expect(formatted).not.toContain('Use HashMap'); // mockProblems[0].notes
+    expect(formatted).not.toContain('notes:');
+  });
+
+  it('handles empty problem safely', () => {
+    expect(formatProblemForClipboard(null)).toBe('');
+  });
+});
+
