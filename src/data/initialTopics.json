@@ -76,5 +76,47 @@
     "name": "Dynamic Programming",
     "description": "Optimal substructure, overlapping subproblems, memoization, 1D/2D tabulation.",
     "status": "Revision"
+  },
+  {
+    "id": "sorting",
+    "name": "Sorting",
+    "description": "Comparison-based sorts (Merge, Quick, Insertion, Selection, Bubble), cyclic sort, and stability.",
+    "status": "Learning"
+  },
+  {
+    "id": "heaps",
+    "name": "Heaps and Priority Queues",
+    "description": "Min/max heaps, heapify algorithm, top-K elements, priority queue scheduling, and median streams.",
+    "status": "Learning"
+  },
+  {
+    "id": "bit-manipulation",
+    "name": "Bit Manipulation",
+    "description": "Bitwise operators, bit masks, XOR tricks, power of two, counting set bits, and subsets.",
+    "status": "Learning"
+  },
+  {
+    "id": "greedy-algorithms",
+    "name": "Greedy Algorithms",
+    "description": "Locally optimal choices, interval scheduling, jump game, fractional knapsack, and task scheduler.",
+    "status": "Learning"
+  },
+  {
+    "id": "tries",
+    "name": "Tries",
+    "description": "Prefix trees, auto-complete, prefix matching, word break, and bitwise XOR maximum tries.",
+    "status": "Learning"
+  },
+  {
+    "id": "maths",
+    "name": "Maths and Number Theory",
+    "description": "Prime sieve of Eratosthenes, GCD/Euclidean algorithm, modular arithmetic, divisors, and prime factorization.",
+    "status": "Learning"
+  },
+  {
+    "id": "beginner-problems",
+    "name": "Beginner Problems",
+    "description": "Core programming fundamentals, basic math, basic arrays, recursion foundations, and language basics.",
+    "status": "Completed"
   }
 ]

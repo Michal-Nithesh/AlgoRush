@@ -86,7 +86,8 @@ export function migrateState(rawState) {
 }
 
 /**
- * Merge any newly introduced seed topics or problems into state
+ * Merge any newly introduced seed topics or problems into state,
+ * and update any outdated placeholder problem descriptions.
  */
 export function syncSeedData(state) {
   if (!state || typeof state !== 'object') return getDefaultState();
@@ -94,13 +95,47 @@ export function syncSeedData(state) {
   const existingTopicIds = new Set((state.topics || []).map((t) => t.id));
   const missingTopics = (initialTopics || []).filter((t) => !existingTopicIds.has(t.id));
 
-  const existingProblemIds = new Set((state.problems || []).map((p) => p.id));
+  const seedProblemsById = new Map((initialProblems || []).map((p) => [p.id, p]));
+
+  // Remove old theory non-problem entries and upgrade placeholder descriptions with real input/output
+  const updatedProblems = (state.problems || [])
+    .filter((p) => {
+      if (!p.id) return false;
+      return (
+        !p.id.startsWith('beginner-problems-fundamentals-of-programming-') &&
+        !p.id.startsWith('beginner-problems-language-basics-') &&
+        !p.id.startsWith('beginner-problems-standard-libraries-collections-') &&
+        !p.id.startsWith('beginner-problems-concept-basics-') &&
+        !p.id.endsWith('-theory')
+      );
+    })
+    .map((p) => {
+      const seed = seedProblemsById.get(p.id);
+      if (!seed) return p;
+      if (
+        !p.description ||
+        !p.description.includes('Input:') ||
+        p.description.includes('Topic Path:') ||
+        p.description.includes('Source:') ||
+        p.description.toLowerCase().includes('striver') ||
+        p.description.includes('Premium Question')
+      ) {
+        return {
+          ...p,
+          description: seed.description,
+          notes: seed.notes !== undefined ? seed.notes : p.notes,
+        };
+      }
+      return p;
+    });
+
+  const existingProblemIds = new Set(updatedProblems.map((p) => p.id));
   const missingProblems = (initialProblems || []).filter((p) => !existingProblemIds.has(p.id));
 
   return {
     ...state,
     topics: missingTopics.length > 0 ? [...state.topics, ...missingTopics] : state.topics,
-    problems: missingProblems.length > 0 ? [...state.problems, ...missingProblems] : state.problems,
+    problems: missingProblems.length > 0 ? [...updatedProblems, ...missingProblems] : updatedProblems,
   };
 }
 
