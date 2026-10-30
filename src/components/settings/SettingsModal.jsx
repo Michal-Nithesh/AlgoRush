@@ -62,7 +62,6 @@ export default function SettingsModal({ isOpen, onClose }) {
       }
     };
     reader.readAsText(file);
-    // Reset file input
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -73,15 +72,15 @@ export default function SettingsModal({ isOpen, onClose }) {
       <Modal isOpen={isOpen} onClose={onClose} title="Settings & Data Management" maxWidth="max-w-lg">
         <div className="space-y-6">
           {/* Sound Notification Settings */}
-          <div className="space-y-3 pb-5 border-b border-[#29344D]">
+          <div className="space-y-3 pb-5 border-b border-[#2C3142]">
             <h3 className="text-xs font-bold text-slate-200 uppercase tracking-wider font-mono">
               Timer Preferences
             </h3>
 
             {/* Sound Toggle */}
-            <div className="flex items-center justify-between p-3.5 rounded-xl bg-[#1D2740]/60 border border-[#29344D]">
+            <div className="flex items-center justify-between p-3.5 rounded-xl bg-[#1D202D]/60 border border-[#2C3142]">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-[#151C30] text-purple-400 border border-[#29344D]">
+                <div className="p-2 rounded-lg bg-[#14161F] text-amber-400 border border-[#2C3142]">
                   {settings.soundEnabled ? (
                     <Volume2 className="w-4 h-4" />
                   ) : (
@@ -93,7 +92,7 @@ export default function SettingsModal({ isOpen, onClose }) {
                     Sound Notifications
                   </span>
                   <span className="text-[11px] text-slate-400">
-                    Play chime when challenge countdown reaches zero
+                    Play audio cues on countdown finish and challenges
                   </span>
                 </div>
               </div>
@@ -111,7 +110,7 @@ export default function SettingsModal({ isOpen, onClose }) {
                   type="button"
                   onClick={handleTestSuccess}
                   className="px-2 py-1 text-[11px] font-mono text-emerald-300 hover:text-emerald-200 bg-emerald-950/40 border border-emerald-800/40 rounded-lg transition-colors"
-                  title="Test solved victory chime"
+                  title="Test victory chime"
                 >
                   Test Chime
                 </button>
@@ -119,12 +118,12 @@ export default function SettingsModal({ isOpen, onClose }) {
                   type="button"
                   onClick={handleSoundToggle}
                   className={`w-11 h-6 flex items-center rounded-full p-1 transition-colors ${
-                    settings.soundEnabled ? 'bg-purple-600' : 'bg-slate-700'
+                    settings.soundEnabled ? 'bg-amber-500' : 'bg-slate-700'
                   }`}
                   aria-label="Toggle sound notifications"
                 >
                   <div
-                    className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${
+                    className={`bg-slate-950 w-4 h-4 rounded-full shadow-sm transform transition-transform ${
                       settings.soundEnabled ? 'translate-x-5' : 'translate-x-0'
                     }`}
                   />
@@ -133,9 +132,9 @@ export default function SettingsModal({ isOpen, onClose }) {
             </div>
 
             {/* Default Duration */}
-            <div className="flex items-center justify-between p-3.5 rounded-xl bg-[#1D2740]/60 border border-[#29344D]">
+            <div className="flex items-center justify-between p-3.5 rounded-xl bg-[#1D202D]/60 border border-[#2C3142]">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-[#151C30] text-cyan-400 border border-[#29344D]">
+                <div className="p-2 rounded-lg bg-[#14161F] text-amber-400 border border-[#2C3142]">
                   <Clock className="w-4 h-4" />
                 </div>
                 <div>
@@ -143,7 +142,7 @@ export default function SettingsModal({ isOpen, onClose }) {
                     Default Challenge Time
                   </span>
                   <span className="text-[11px] text-slate-400">
-                    Preselected timer duration for newly spun problems
+                    Preselected timer duration for newly picked problems
                   </span>
                 </div>
               </div>
@@ -151,7 +150,7 @@ export default function SettingsModal({ isOpen, onClose }) {
               <select
                 value={settings.defaultTimeMinutes}
                 onChange={handleDurationChange}
-                className="px-3 py-1.5 bg-[#151C30] border border-[#29344D] rounded-xl text-slate-200 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-purple-500 cursor-pointer"
+                className="px-3 py-1.5 bg-[#14161F] border border-[#2C3142] rounded-xl text-slate-200 text-xs font-mono focus:outline-none focus:ring-1 focus:ring-amber-500 cursor-pointer"
               >
                 <option value={15}>15 minutes</option>
                 <option value={30}>30 minutes</option>
@@ -162,7 +161,7 @@ export default function SettingsModal({ isOpen, onClose }) {
           </div>
 
           {/* Backup, Export & Import */}
-          <div className="space-y-3 pb-5 border-b border-[#29344D]">
+          <div className="space-y-3 pb-5 border-b border-[#2C3142]">
             <h3 className="text-xs font-bold text-slate-200 uppercase tracking-wider font-mono">
               Backup & Data Portability
             </h3>
@@ -193,9 +192,9 @@ export default function SettingsModal({ isOpen, onClose }) {
               <button
                 type="button"
                 onClick={exportData}
-                className="flex items-center justify-center gap-2 py-2.5 px-4 bg-[#1D2740] hover:bg-[#24304F] text-slate-200 border border-[#29344D] rounded-xl text-xs font-semibold transition-all"
+                className="flex items-center justify-center gap-2 py-2.5 px-4 bg-[#1D202D] hover:bg-[#25293A] text-slate-200 border border-[#2C3142] rounded-xl text-xs font-semibold transition-colors"
               >
-                <Download className="w-4 h-4 text-cyan-400" />
+                <Download className="w-4 h-4 text-amber-400" />
                 <span>Export JSON Backup</span>
               </button>
 
@@ -203,9 +202,9 @@ export default function SettingsModal({ isOpen, onClose }) {
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="flex items-center justify-center gap-2 py-2.5 px-4 bg-[#1D2740] hover:bg-[#24304F] text-slate-200 border border-[#29344D] rounded-xl text-xs font-semibold transition-all"
+                className="flex items-center justify-center gap-2 py-2.5 px-4 bg-[#1D202D] hover:bg-[#25293A] text-slate-200 border border-[#2C3142] rounded-xl text-xs font-semibold transition-colors"
               >
-                <Upload className="w-4 h-4 text-purple-400" />
+                <Upload className="w-4 h-4 text-amber-400" />
                 <span>Import JSON Backup</span>
               </button>
               <input
@@ -237,7 +236,7 @@ export default function SettingsModal({ isOpen, onClose }) {
               <button
                 type="button"
                 onClick={() => setIsResetConfirmOpen(true)}
-                className="flex items-center justify-center gap-1.5 py-2 px-3 bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/30 rounded-xl text-xs font-semibold transition-all"
+                className="flex items-center justify-center gap-1.5 py-2 px-3 bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/30 rounded-xl text-xs font-semibold transition-colors"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
                 <span>Reset Data</span>
@@ -246,8 +245,8 @@ export default function SettingsModal({ isOpen, onClose }) {
           </div>
 
           {/* Storage Disclaimer Note */}
-          <div className="flex items-start gap-2.5 p-3 rounded-xl bg-[#0B1020]/60 border border-[#29344D] text-[11px] text-slate-400">
-            <Info className="w-4 h-4 text-purple-400 flex-shrink-0 mt-0.5" />
+          <div className="flex items-start gap-2.5 p-3 rounded-xl bg-[#0C0D12]/70 border border-[#2C3142] text-[11px] text-slate-400">
+            <Info className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
             <p>
               Note: Data is saved strictly in your local browser profile. It is not synchronized across different devices and may be wiped if you clear site data.
             </p>

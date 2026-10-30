@@ -37,20 +37,19 @@ export default function StatisticsView() {
       value: `${stats.successRate}%`,
       subtext: `${stats.solvedToday} solved out of ${stats.challengesToday} attempts today`,
       icon: TrendingUp,
-      color: 'text-cyan-400',
-      bg: 'bg-cyan-500/10 border-cyan-500/20',
+      color: 'text-sky-400',
+      bg: 'bg-sky-500/10 border-sky-500/20',
     },
     {
       label: 'Total Topics Covered',
       value: stats.totalTopics,
       subtext: 'Core algorithmic patterns organized',
       icon: Layers,
-      color: 'text-purple-400',
-      bg: 'bg-purple-500/10 border-purple-500/20',
+      color: 'text-amber-400',
+      bg: 'bg-amber-500/10 border-amber-500/20',
     },
   ];
 
-  // Calculate highest count for weekly graph scaling
   const maxWeeklyCount = Math.max(
     1,
     ...stats.weeklyActivity.map((d) => d.totalCount)
@@ -61,7 +60,7 @@ export default function StatisticsView() {
       {/* Header */}
       <div>
         <div className="flex items-center gap-2">
-          <BarChart3 className="w-5 h-5 text-purple-400" />
+          <BarChart3 className="w-5 h-5 text-amber-400" />
           <h1 className="text-xl font-bold text-white tracking-tight">
             Performance Analytics
           </h1>
@@ -78,7 +77,7 @@ export default function StatisticsView() {
           return (
             <div
               key={idx}
-              className="bg-[#151C30] border border-[#29344D] rounded-2xl p-5 shadow-lg flex flex-col justify-between gap-3 relative overflow-hidden"
+              className="bg-[#14161F] border border-[#2C3142] rounded-2xl p-5 shadow-sm flex flex-col justify-between gap-3 relative overflow-hidden"
             >
               <div className="flex items-start justify-between">
                 <div>
@@ -102,10 +101,10 @@ export default function StatisticsView() {
       {/* 2-Column Section: Weekly Activity Bar Chart + Difficulty Breakdown */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Weekly Activity 7-Day Chart (7 cols) */}
-        <div className="lg:col-span-7 bg-[#151C30] border border-[#29344D] rounded-2xl p-6 shadow-lg flex flex-col gap-4">
+        <div className="lg:col-span-7 bg-[#14161F] border border-[#2C3142] rounded-2xl p-6 shadow-sm flex flex-col gap-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-cyan-400" />
+              <Calendar className="w-4 h-4 text-amber-400" />
               <h3 className="text-sm font-bold text-white uppercase tracking-wider font-mono">
                 Past 7 Days Consistency
               </h3>
@@ -115,7 +114,7 @@ export default function StatisticsView() {
             </span>
           </div>
 
-          <div className="h-48 flex items-end justify-between gap-2 pt-6 pb-2 px-2 border-b border-[#29344D]">
+          <div className="h-48 flex items-end justify-between gap-2 pt-6 pb-2 px-2 border-b border-[#2C3142]">
             {stats.weeklyActivity.map((day, i) => {
               const solvedHeightPercent = (day.solvedCount / maxWeeklyCount) * 100;
               const failedHeightPercent = (day.failedCount / maxWeeklyCount) * 100;
@@ -127,27 +126,27 @@ export default function StatisticsView() {
                   className="flex-1 flex flex-col items-center gap-2 h-full justify-end group"
                 >
                   {/* Tooltip on hover */}
-                  <div className="opacity-0 group-hover:opacity-100 transition-opacity text-[10px] bg-[#1D2740] border border-[#29344D] text-slate-200 px-2 py-1 rounded-md pointer-events-none whitespace-nowrap mb-1 font-mono">
+                  <div className="opacity-0 group-hover:opacity-100 transition-opacity text-[10px] bg-[#1D202D] border border-[#2C3142] text-slate-200 px-2 py-1 rounded-md pointer-events-none whitespace-nowrap mb-1 font-mono">
                     {day.solvedCount} solved / {day.totalCount} tried
                   </div>
 
                   {/* Stacked bar representation */}
-                  <div className="w-full max-w-[36px] bg-[#1D2740] rounded-t-lg overflow-hidden flex flex-col justify-end h-32 relative">
+                  <div className="w-full max-w-[36px] bg-[#1D202D] rounded-t-lg overflow-hidden flex flex-col justify-end h-32 relative">
                     {isEmpty ? (
-                      <div className="w-full h-1 bg-[#29344D] rounded-full self-center mb-1" />
+                      <div className="w-full h-1 bg-[#2C3142] rounded-full self-center mb-1" />
                     ) : (
                       <>
                         {day.failedCount > 0 && (
                           <div
                             style={{ height: `${failedHeightPercent}%` }}
-                            className="w-full bg-rose-500/70 hover:bg-rose-500 transition-all"
+                            className="w-full bg-rose-500/70 hover:bg-rose-500 transition-colors"
                             title={`${day.failedCount} failed attempts`}
                           />
                         )}
                         {day.solvedCount > 0 && (
                           <div
                             style={{ height: `${solvedHeightPercent}%` }}
-                            className="w-full bg-emerald-500 hover:bg-emerald-400 shadow-glow-green transition-all"
+                            className="w-full bg-emerald-500 hover:bg-emerald-400 transition-colors"
                             title={`${day.solvedCount} solved challenges`}
                           />
                         )}
@@ -158,7 +157,7 @@ export default function StatisticsView() {
                   {/* Day Label */}
                   <span
                     className={`text-xs font-mono font-medium ${
-                      day.isToday ? 'text-cyan-400 font-bold' : 'text-slate-400'
+                      day.isToday ? 'text-amber-400 font-bold' : 'text-slate-400'
                     }`}
                   >
                     {day.dayLabel}
@@ -178,16 +177,16 @@ export default function StatisticsView() {
               <span>Failed / Expired</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded bg-[#1D2740]" />
+              <span className="w-3 h-3 rounded bg-[#1D202D]" />
               <span>No Activity</span>
             </div>
           </div>
         </div>
 
         {/* Difficulty Breakdown (5 cols) */}
-        <div className="lg:col-span-5 bg-[#151C30] border border-[#29344D] rounded-2xl p-6 shadow-lg flex flex-col justify-between gap-4">
+        <div className="lg:col-span-5 bg-[#14161F] border border-[#2C3142] rounded-2xl p-6 shadow-sm flex flex-col justify-between gap-4">
           <div className="flex items-center gap-2">
-            <Award className="w-4 h-4 text-purple-400" />
+            <Award className="w-4 h-4 text-amber-400" />
             <h3 className="text-sm font-bold text-white uppercase tracking-wider font-mono">
               Difficulty Mastery
             </h3>
@@ -214,7 +213,7 @@ export default function StatisticsView() {
                       {diffStat.solved} / {diffStat.total} ({percent}%)
                     </span>
                   </div>
-                  <div className="w-full h-2.5 bg-[#1D2740] rounded-full overflow-hidden border border-[#29344D]">
+                  <div className="w-full h-2.5 bg-[#1D202D] rounded-full overflow-hidden border border-[#2C3142]">
                     <div
                       className={`h-full rounded-full transition-all duration-500 ${colors.split(' ')[0]}`}
                       style={{ width: `${percent}%` }}
@@ -225,9 +224,9 @@ export default function StatisticsView() {
             })}
           </div>
 
-          <div className="pt-4 border-t border-[#29344D] flex items-center justify-between text-xs text-slate-400">
+          <div className="pt-4 border-t border-[#2C3142] flex items-center justify-between text-xs text-slate-400">
             <span>Overall completion rate:</span>
-            <span className="font-mono font-bold text-purple-300">
+            <span className="font-mono font-bold text-amber-400">
               {Math.round((stats.totalSolvedProblems / (stats.totalProblems || 1)) * 100)}%
             </span>
           </div>
