@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useApp } from '../../context/AppContext';
 import DifficultyBadge from '../common/DifficultyBadge';
+import ConfirmDialog from '../common/ConfirmDialog';
 import {
   Clock,
   CheckCircle2,
@@ -9,12 +10,14 @@ import {
   Flag,
   Calendar,
   Search,
+  Trash2,
 } from 'lucide-react';
 
 export default function ChallengeHistory() {
-  const { history } = useApp();
+  const { history, clearHistory } = useApp();
   const [statusFilter, setStatusFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [isClearConfirmOpen, setIsClearConfirmOpen] = useState(false);
 
   const filteredHistory = useMemo(() => {
     return history.filter((item) => {
@@ -85,6 +88,17 @@ export default function ChallengeHistory() {
             Review past timer sessions, completion statuses, and pattern notes.
           </p>
         </div>
+
+        {history.length > 0 && (
+          <button
+            onClick={() => setIsClearConfirmOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-rose-300 hover:text-rose-200 bg-rose-950/20 hover:bg-rose-950/40 border border-rose-800/40 rounded-xl transition-colors self-start sm:self-auto"
+            title="Clear all challenge history records"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+            <span>Clear History</span>
+          </button>
+        )}
       </div>
 
       {/* Filter and Search Bar */}
@@ -186,6 +200,16 @@ export default function ChallengeHistory() {
           ))}
         </div>
       )}
+
+      {/* Clear History Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={isClearConfirmOpen}
+        onClose={() => setIsClearConfirmOpen(false)}
+        onConfirm={clearHistory}
+        title="Clear Challenge History?"
+        message="Are you sure you want to permanently clear your challenge session history? This will reset all session records, but your problem notes and library will remain intact."
+        confirmLabel="Clear All History"
+      />
     </div>
   );
 }

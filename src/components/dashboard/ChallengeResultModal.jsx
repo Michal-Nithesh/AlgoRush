@@ -23,6 +23,7 @@ function ChallengeResultContent({
 }) {
   const [notes, setNotes] = useState(problem?.notes || '');
   const [forRevision, setForRevision] = useState(!!problem?.forRevision);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (status === 'solved') {
@@ -77,6 +78,8 @@ function ChallengeResultContent({
   };
 
   const handleSaveAndClose = () => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     onSaveResult({
       problemId: problem.id,
       problemTitle: problem.title,
@@ -92,6 +95,8 @@ function ChallengeResultContent({
   };
 
   const handleSaveAndSpin = () => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     onSaveResult({
       problemId: problem.id,
       problemTitle: problem.title,

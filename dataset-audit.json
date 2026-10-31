@@ -1,0 +1,186 @@
+{
+  "auditTimestamp": "2026-10-31T12:07:06.640Z",
+  "datasetSummary": {
+    "totalUniqueTopics": 20,
+    "totalUniqueProblems": 453,
+    "totalTopicAssignments": 518,
+    "averageTopicsPerProblem": 1.14,
+    "problemsWithSingleTopic": 389,
+    "problemsWithMultipleTopics": 64
+  },
+  "difficultyDistribution": {
+    "Easy": 65,
+    "Medium": 278,
+    "Hard": 110
+  },
+  "topicDistribution": {
+    "patterns": 23,
+    "arrays": 40,
+    "strings-hashing": 33,
+    "two-pointers": 15,
+    "dynamic-programming": 52,
+    "binary-search": 32,
+    "sliding-window": 12,
+    "linked-lists": 42,
+    "stacks-queues": 30,
+    "trees": 45,
+    "recursion": 34,
+    "graphs": 45,
+    "backtracking": 5,
+    "maths": 16,
+    "beginner-problems": 37,
+    "sorting": 7,
+    "bit-manipulation": 12,
+    "greedy-algorithms": 14,
+    "heaps": 18,
+    "tries": 6
+  },
+  "categoryBreakdown": {
+    "Foundations": 0,
+    "Core Algorithms": 0,
+    "Linear Structures": 0,
+    "Trees & Graphs": 0,
+    "Advanced Techniques": 0
+  },
+  "duplicateChecks": {
+    "duplicateTopicIds": [],
+    "duplicateProblemIds": [],
+    "duplicateProblemTitles": []
+  },
+  "referentialIntegrity": {
+    "validTopicReferences": 518,
+    "brokenTopicReferences": [],
+    "problemsWithoutTopics": []
+  },
+  "fieldValidation": {
+    "totalChecked": 453,
+    "missingId": 0,
+    "missingTitle": 0,
+    "missingDifficulty": 0,
+    "missingEstimatedTime": 0,
+    "missingDescription": 0,
+    "missingExamples": []
+  },
+  "topicDetails": [
+    {
+      "id": "patterns",
+      "name": "Patterns",
+      "status": "Completed",
+      "problemCount": 23
+    },
+    {
+      "id": "arrays",
+      "name": "Arrays",
+      "status": "Completed",
+      "problemCount": 40
+    },
+    {
+      "id": "strings-hashing",
+      "name": "Strings and Hashing",
+      "status": "Completed",
+      "problemCount": 33
+    },
+    {
+      "id": "two-pointers",
+      "name": "Two Pointers",
+      "status": "Learning",
+      "problemCount": 15
+    },
+    {
+      "id": "sliding-window",
+      "name": "Sliding Window",
+      "status": "Learning",
+      "problemCount": 12
+    },
+    {
+      "id": "binary-search",
+      "name": "Binary Search",
+      "status": "Learning",
+      "problemCount": 32
+    },
+    {
+      "id": "recursion",
+      "name": "Recursion",
+      "status": "Learning",
+      "problemCount": 34
+    },
+    {
+      "id": "backtracking",
+      "name": "Backtracking",
+      "status": "Revision",
+      "problemCount": 5
+    },
+    {
+      "id": "linked-lists",
+      "name": "Linked Lists",
+      "status": "Completed",
+      "problemCount": 42
+    },
+    {
+      "id": "stacks-queues",
+      "name": "Stacks and Queues",
+      "status": "Learning",
+      "problemCount": 30
+    },
+    {
+      "id": "trees",
+      "name": "Trees",
+      "status": "Learning",
+      "problemCount": 45
+    },
+    {
+      "id": "graphs",
+      "name": "Graphs",
+      "status": "Revision",
+      "problemCount": 45
+    },
+    {
+      "id": "dynamic-programming",
+      "name": "Dynamic Programming",
+      "status": "Revision",
+      "problemCount": 52
+    },
+    {
+      "id": "sorting",
+      "name": "Sorting",
+      "status": "Learning",
+      "problemCount": 7
+    },
+    {
+      "id": "heaps",
+      "name": "Heaps and Priority Queues",
+      "status": "Learning",
+      "problemCount": 18
+    },
+    {
+      "id": "bit-manipulation",
+      "name": "Bit Manipulation",
+      "status": "Learning",
+      "problemCount": 12
+    },
+    {
+      "id": "greedy-algorithms",
+      "name": "Greedy Algorithms",
+      "status": "Learning",
+      "problemCount": 14
+    },
+    {
+      "id": "tries",
+      "name": "Tries",
+      "status": "Learning",
+      "problemCount": 6
+    },
+    {
+      "id": "maths",
+      "name": "Maths and Number Theory",
+      "status": "Learning",
+      "problemCount": 16
+    },
+    {
+      "id": "beginner-problems",
+      "name": "Beginner Problems",
+      "status": "Completed",
+      "problemCount": 37
+    }
+  ]
+}

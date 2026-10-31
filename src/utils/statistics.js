@@ -122,6 +122,11 @@ export function calculateDashboardStats(topics = [], problems = [], history = []
     ? Math.round((solvedCount / completedAttempts.length) * 100)
     : 0;
 
+  // Unique problem library completion percentage
+  const uniqueSolveRate = totalProblems > 0
+    ? Math.round((totalSolvedProblems / totalProblems) * 100)
+    : 0;
+
   // Current streak
   const streak = calculateStreak(history);
 
@@ -152,6 +157,7 @@ export function calculateDashboardStats(topics = [], problems = [], history = []
     challengesToday,
     solvedToday,
     successRate,
+    uniqueSolveRate,
     streak,
     weeklyActivity,
     difficultyStats,

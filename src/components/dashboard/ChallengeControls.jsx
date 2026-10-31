@@ -106,7 +106,6 @@ export default function ChallengeControls({
   if (!problem) return null;
 
   const handleAbandonConfirm = () => {
-    resetTimer();
     onFinishChallenge('abandoned');
   };
 

@@ -20,18 +20,25 @@ import {
 
 const CATEGORY_MAP = {
   patterns: 'Foundations',
+  'beginner-problems': 'Foundations',
   arrays: 'Foundations',
   'strings-hashing': 'Foundations',
+  maths: 'Foundations',
+  'bit-manipulation': 'Foundations',
   'two-pointers': 'Core Algorithms',
   'sliding-window': 'Core Algorithms',
   'binary-search': 'Core Algorithms',
   recursion: 'Core Algorithms',
+  sorting: 'Core Algorithms',
   'linked-lists': 'Linear Structures',
   'stacks-queues': 'Linear Structures',
   trees: 'Trees & Graphs',
   graphs: 'Trees & Graphs',
+  heaps: 'Trees & Graphs',
+  tries: 'Trees & Graphs',
   backtracking: 'Advanced Techniques',
   'dynamic-programming': 'Advanced Techniques',
+  'greedy-algorithms': 'Advanced Techniques',
 };
 
 const CATEGORY_ORDER = [

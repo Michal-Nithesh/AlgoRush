@@ -28,11 +28,20 @@ export default function Dashboard() {
   // Active challenge abandon confirmation state
   const [pendingPickerAction, setPendingPickerAction] = useState(null);
 
+  // Handle countdown expiration
+  const handleTimerExpire = useCallback(() => {
+    setResultModalState({
+      isOpen: true,
+      status: 'failed',
+    });
+  }, []);
+
   // Initialize timer with persisted active challenge state if available
   const timer = useChallengeTimer({
     soundEnabled: settings?.soundEnabled ?? true,
     initialActiveState: activeChallenge,
     onStatePersist: persistActiveChallenge,
+    onExpire: handleTimerExpire,
   });
 
   const isChallengeActive = timer.status === 'running' || timer.status === 'paused';

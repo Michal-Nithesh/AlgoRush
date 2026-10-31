@@ -2,6 +2,7 @@ import initialTopics from '../data/initialTopics.json';
 import initialProblems from '../data/initialProblems.json';
 
 export const STORAGE_KEY = 'algorush_state_v2';
+export const BACKUP_STORAGE_KEY = 'algorush_state_backup';
 export const LEGACY_STORAGE_KEY = 'algorush_state_v1';
 export const CURRENT_SCHEMA_VERSION = 2;
 
@@ -27,7 +28,7 @@ export function getDefaultState() {
 }
 
 /**
- * Validate imported data structure
+ * Validate imported data structure with strict schema & referential integrity checks
  */
 export function validateImportData(data) {
   if (!data || typeof data !== 'object') {
@@ -42,15 +43,48 @@ export function validateImportData(data) {
     return { valid: false, error: 'Missing or invalid "problems" array.' };
   }
 
+  const seenTopicIds = new Set();
   for (const topic of data.topics) {
-    if (!topic.id || !topic.name) {
-      return { valid: false, error: `Invalid topic: id and name are required (${JSON.stringify(topic)})` };
+    if (!topic.id || typeof topic.id !== 'string' || !topic.name) {
+      return { valid: false, error: `Invalid topic: string 'id' and 'name' are required (${JSON.stringify(topic)})` };
+    }
+    if (seenTopicIds.has(topic.id)) {
+      return { valid: false, error: `Duplicate topic ID found in import: "${topic.id}".` };
+    }
+    seenTopicIds.add(topic.id);
+  }
+
+  const seenProblemIds = new Set();
+  const validDifficulties = new Set(['easy', 'medium', 'hard']);
+
+  for (const prob of data.problems) {
+    if (!prob.id || typeof prob.id !== 'string' || !prob.title || !Array.isArray(prob.topicIds)) {
+      return { valid: false, error: `Invalid problem: 'id', 'title', and 'topicIds' array are required (${prob.title || prob.id})` };
+    }
+    if (seenProblemIds.has(prob.id)) {
+      return { valid: false, error: `Duplicate problem ID found in import: "${prob.id}".` };
+    }
+    seenProblemIds.add(prob.id);
+
+    if (prob.difficulty && !validDifficulties.has(String(prob.difficulty).toLowerCase())) {
+      return { valid: false, error: `Problem "${prob.id}" has invalid difficulty: "${prob.difficulty}". Must be Easy, Medium, or Hard.` };
+    }
+
+    for (const tId of prob.topicIds) {
+      if (!seenTopicIds.has(tId)) {
+        return { valid: false, error: `Problem "${prob.id}" references non-existent topic ID: "${tId}".` };
+      }
     }
   }
 
-  for (const prob of data.problems) {
-    if (!prob.id || !prob.title || !Array.isArray(prob.topicIds)) {
-      return { valid: false, error: `Invalid problem: id, title, and topicIds array are required (${prob.title || prob.id})` };
+  if (data.history !== undefined) {
+    if (!Array.isArray(data.history)) {
+      return { valid: false, error: 'Field "history" must be an array.' };
+    }
+    for (const entry of data.history) {
+      if (!entry.problemId || !entry.status) {
+        return { valid: false, error: "Invalid history entry: 'problemId' and 'status' are required." };
+      }
     }
   }
 
@@ -152,6 +186,9 @@ export function loadStateFromStorage() {
     if (!raw) {
       raw = window.localStorage.getItem(LEGACY_STORAGE_KEY);
     }
+    if (!raw) {
+      raw = window.localStorage.getItem(BACKUP_STORAGE_KEY);
+    }
 
     if (!raw) {
       const defaultState = getDefaultState();
@@ -164,14 +201,27 @@ export function loadStateFromStorage() {
     saveStateToStorage(migrated);
     return migrated;
   } catch (err) {
-    console.error('Failed to parse AlgoRush data from localStorage. Restoring default.', err);
+    console.error('Failed to parse AlgoRush data from primary key. Attempting backup recovery...', err);
+    try {
+      const backupRaw = window.localStorage.getItem(BACKUP_STORAGE_KEY);
+      if (backupRaw) {
+        const backupParsed = JSON.parse(backupRaw);
+        const restored = syncSeedData(migrateState(backupParsed));
+        saveStateToStorage(restored);
+        return restored;
+      }
+    } catch {
+      // Backup also failed
+    }
+
+    console.error('Restoring default factory state after storage corruption.', err);
     const defaultState = getDefaultState();
     return defaultState;
   }
 }
 
 /**
- * Save state to localStorage safely
+ * Save state to localStorage safely with backup replication
  */
 export function saveStateToStorage(state) {
   if (typeof window === 'undefined' || !window.localStorage) return;
@@ -182,8 +232,25 @@ export function saveStateToStorage(state) {
       updatedAt: new Date().toISOString(),
     });
     window.localStorage.setItem(STORAGE_KEY, serialized);
+    try {
+      window.localStorage.setItem(BACKUP_STORAGE_KEY, serialized);
+    } catch {
+      // Ignore backup quota limit
+    }
   } catch (err) {
     console.error('Failed to save AlgoRush state to localStorage', err);
+    if (err && err.name === 'QuotaExceededError') {
+      try {
+        const trimmed = {
+          ...state,
+          history: (state.history || []).slice(0, 500),
+          updatedAt: new Date().toISOString(),
+        };
+        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(trimmed));
+      } catch (secondaryErr) {
+        console.error('Critical quota error saving trimmed state', secondaryErr);
+      }
+    }
   }
 }
 

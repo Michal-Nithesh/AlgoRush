@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { AppContext } from './AppContext';
 import {
+  STORAGE_KEY,
   loadStateFromStorage,
   saveStateToStorage,
   resetStorageToDefaults,
@@ -24,9 +25,14 @@ export function AppProvider({ children }) {
   const [topicStatusFilter, setTopicStatusFilter] = useState('All');
   const [forRevisionOnly, setForRevisionOnly] = useState(false);
 
-  // Active chosen problem for the challenge card / timer
+  // Active chosen problem for the challenge card / timer (restore active problem across refreshes)
   const [selectedProblem, setSelectedProblem] = useState(() => {
-    // Pick the first problem if available
+    if (appState.activeChallenge?.problemId) {
+      const active = (appState.problems || []).find(
+        (p) => p.id === appState.activeChallenge.problemId
+      );
+      if (active) return active;
+    }
     return appState.problems?.[0] || null;
   });
 
@@ -53,6 +59,28 @@ export function AppProvider({ children }) {
       sessionSolvedProblemIds: sessionSolvedIds,
     });
   }, [appState, sessionSolvedIds]);
+
+  // Cross-tab synchronization via storage event
+  useEffect(() => {
+    const handleStorageEvent = (event) => {
+      if (event.key === STORAGE_KEY && event.newValue) {
+        try {
+          const remoteState = JSON.parse(event.newValue);
+          if (remoteState && Array.isArray(remoteState.topics) && Array.isArray(remoteState.problems)) {
+            setAppState(remoteState);
+            if (Array.isArray(remoteState.sessionSolvedProblemIds)) {
+              setSessionSolvedIds(remoteState.sessionSolvedProblemIds);
+            }
+          }
+        } catch {
+          // Ignore invalid cross-tab event payloads
+        }
+      }
+    };
+
+    window.addEventListener('storage', handleStorageEvent);
+    return () => window.removeEventListener('storage', handleStorageEvent);
+  }, []);
 
   // Topic management
   const addTopic = useCallback((topicData) => {
@@ -93,11 +121,15 @@ export function AppProvider({ children }) {
 
   const deleteTopic = useCallback((topicId) => {
     setAppState((prev) => {
-      // Also remove topicId from any problems referencing it
-      const updatedProblems = prev.problems.map((p) => ({
-        ...p,
-        topicIds: p.topicIds.filter((id) => id !== topicId),
-      }));
+      // Also remove topicId from any problems referencing it, preventing orphaned problems
+      const fallbackTopicId = prev.topics.find((t) => t.id !== topicId)?.id || 'beginner-problems';
+      const updatedProblems = prev.problems.map((p) => {
+        const remainingTopics = (p.topicIds || []).filter((id) => id !== topicId);
+        return {
+          ...p,
+          topicIds: remainingTopics.length > 0 ? remainingTopics : [fallbackTopicId],
+        };
+      });
 
       return {
         ...prev,
@@ -236,6 +268,14 @@ export function AppProvider({ children }) {
     }
   }, [updateProblem]);
 
+  const clearHistory = useCallback(() => {
+    setAppState((prev) => ({
+      ...prev,
+      history: [],
+    }));
+    showToast('Challenge history cleared.', 'info');
+  }, [showToast]);
+
   // Persist active running/paused challenge state
   const persistActiveChallenge = useCallback((challengeTimerState) => {
     setAppState((prev) => ({
@@ -344,6 +384,7 @@ export function AppProvider({ children }) {
       deleteProblem,
       toggleRevision,
       recordChallenge,
+      clearHistory,
       persistActiveChallenge,
       updateSettings,
       resetAllData,
@@ -373,6 +414,7 @@ export function AppProvider({ children }) {
       deleteProblem,
       toggleRevision,
       recordChallenge,
+      clearHistory,
       persistActiveChallenge,
       updateSettings,
       resetAllData,
