@@ -1,11 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
-  <rect width="32" height="32" rx="8" fill="#151C30"/>
-  <rect x="0.5" y="0.5" width="31" height="31" rx="7.5" stroke="#29344D"/>
-  <path d="M17 4L8 16H15L13 28L24 14H16L19 4H17Z" fill="url(#bolt-grad)" filter="drop-shadow(0 0 6px rgba(139, 92, 246, 0.6))"/>
-  <defs>
-    <linearGradient id="bolt-grad" x1="8" y1="4" x2="24" y2="28" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#22D3EE"/>
-      <stop offset="1" stop-color="#8B5CF6"/>
-    </linearGradient>
-  </defs>
+  <rect width="32" height="32" rx="8" fill="#14161F"/>
+  <rect x="0.5" y="0.5" width="31" height="31" rx="7.5" stroke="#2C3142"/>
+  <!-- Monogram A + kinetic arrow in solar amber -->
+  <path d="M6 24L13.5 8L21 24" stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M9.5 17.5H17.5" stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M19 12.5L25 17.5L19 22.5" stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="13.5" cy="8" r="1.8" fill="#F59E0B"/>
 </svg>
