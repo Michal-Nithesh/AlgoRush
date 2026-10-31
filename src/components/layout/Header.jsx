@@ -2,7 +2,6 @@ import React from 'react';
 import { useApp } from '../../context/AppContext';
 import { calculateDashboardStats } from '../../utils/statistics';
 import {
-  Flame,
   CheckCircle2,
   Settings,
   Code2,
@@ -115,16 +114,6 @@ export default function Header({ onOpenSettings }) {
 
           {/* Stats Badges and Settings Button */}
           <div className="flex items-center gap-2.5 sm:gap-4">
-            {/* Streak Counter */}
-            <div
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#14161F] border border-[#2C3142] text-amber-400 shadow-sm"
-              title={`${stats.streak} day streak of solved problems`}
-            >
-              <Flame className="w-4 h-4 text-amber-400 fill-amber-400/20 animate-pulse-slow" />
-              <span className="font-mono text-sm font-bold text-slate-100">{stats.streak}</span>
-              <span className="text-xs text-slate-400 hidden sm:inline font-mono">streak</span>
-            </div>
-
             {/* Total Solved Badge */}
             <div
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#14161F] border border-[#2C3142] text-emerald-400 shadow-sm"

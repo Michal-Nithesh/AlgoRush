@@ -3,7 +3,6 @@ import { useApp } from '../../context/AppContext';
 import { calculateDashboardStats } from '../../utils/statistics';
 import {
   BarChart3,
-  Flame,
   CheckCircle2,
   Calendar,
   Layers,
@@ -17,10 +16,10 @@ export default function StatisticsView() {
 
   const statCards = [
     {
-      label: 'Current Solving Streak',
-      value: `${stats.streak} Days`,
-      subtext: stats.streak > 0 ? 'Consistent practice builds mastery!' : 'Solve a problem today to ignite a streak.',
-      icon: Flame,
+      label: 'Total Challenges Attempted',
+      value: stats.totalChallenges,
+      subtext: `${stats.solvedToday} solved today`,
+      icon: Award,
       color: 'text-amber-400',
       bg: 'bg-amber-500/10 border-amber-500/20',
     },

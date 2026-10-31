@@ -1,9 +1,26 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
-  <rect width="32" height="32" rx="8" fill="#14161F"/>
-  <rect x="0.5" y="0.5" width="31" height="31" rx="7.5" stroke="#2C3142"/>
-  <!-- Monogram A + kinetic arrow in solar amber -->
-  <path d="M6 24L13.5 8L21 24" stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M9.5 17.5H17.5" stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round"/>
-  <path d="M19 12.5L25 17.5L19 22.5" stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="13.5" cy="8" r="1.8" fill="#F59E0B"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+  <rect width="24" height="24" rx="6" fill="#1D202D"/>
+  <rect x="0.5" y="0.5" width="23" height="23" rx="5.5" stroke="#2C3142" stroke-width="1"/>
+  <!-- Monogram A + forward algorithm rush chevron -->
+  <path
+    d="M3.5 18L10 5.5L16.5 18"
+    stroke="#FBBF24"
+    stroke-width="2.2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M6.5 13H13.5"
+    stroke="#FBBF24"
+    stroke-width="2.2"
+    stroke-linecap="round"
+  />
+  <path
+    d="M14.5 9L19.5 13L14.5 17"
+    stroke="#FBBF24"
+    stroke-width="2.2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <circle cx="10" cy="5.5" r="1.5" fill="#FBBF24" />
 </svg>
